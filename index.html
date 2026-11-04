@@ -186,7 +186,7 @@ async function fec(path, params) {
   const body = await r.json().catch(() => ({}));
   if (!r.ok || body.error) {
     const msg = body.error?.message || body.message || `HTTP ${r.status}`;
-    throw new Error(msg.includes("rate limit") ? "FEC rate limit reached: add a free API key or wait an hour." : msg);
+    throw new Error(msg.includes("rate limit") ? "FEC busy, retrying soon" : msg);
   }
   return body;
 }
@@ -362,7 +362,9 @@ async function refresh() {
       showUpdated(); render();
       return;
     }
-    setStatus("err", `<span class="err-msg">${esc(e.message)}</span>${data ? " Showing the last data." : ""}`);
+    if (data) setStatus("", "FEC filings as of " + new Date(data.at).toLocaleDateString([], { month: "short", day: "numeric" }) +
+      ` <span style="color:var(--dim)">· live update paused: ${esc(e.message)}</span>`);
+    else setStatus("err", `<span class="err-msg">${esc(e.message)}</span>`);
     if (!data) document.getElementById("rows").innerHTML =
       `<tr><td colspan="7" class="err-msg">Couldn't load FEC data: ${esc(e.message)}</td></tr>`;
   }
