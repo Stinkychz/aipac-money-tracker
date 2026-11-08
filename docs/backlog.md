@@ -63,3 +63,18 @@ donations and how much from large ones. It answers who a candidate really depend
 glance, and the numbers come straight from the filings. Where the line between small and large
 sits (federal filings itemize gifts over $200) is a swipe card for Hayden at build time. Hayden
 picked this idea on Nov 8, 2026.
+
+## Follow One Candidate (Medium)
+
+Tap Follow on a candidate and get a short alert whenever a new large donation to them is filed. It
+gives visitors a reason to come back and pairs with Look Up Your Own Representative. How the alert
+reaches people (email, browser notification), what counts as "large" and how often one follower
+can be alerted are swipe cards for Hayden at build time; alerts stay off until Hayden says yes. Hayden picked this idea on
+Nov 8, 2026.
+
+## Money Spent Against Candidates (Medium)
+
+For each candidate, how much outside groups spent on ads and mailers attacking them, and which
+groups paid for it, straight from the spending reports those groups file with the FEC. It builds on
+the donor pages and the Outside Money Map, and shows who is paying to sink each candidate. Hayden
+picked this idea on Nov 8, 2026.
