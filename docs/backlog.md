@@ -19,3 +19,8 @@ date and source keeps a politically sensitive site honest. Hayden picked this id
 ## Plain-Words Explainer Per Donor (Small)
 
 Each donor page gets a two-sentence summary in plain words of who they are and where their money went. A visitor should understand the site in ten seconds. Hayden picked this idea on Nov 8, 2026.
+
+## Search Donors by Name (Small)
+
+A search box where you type part of a donor's name, even misspelled, and jump straight to their page.
+A data site is only useful if the thing you want is one search away. Hayden picked this idea on Nov 8, 2026.
