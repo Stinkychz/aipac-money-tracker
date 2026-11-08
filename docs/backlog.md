@@ -14,7 +14,9 @@ Hayden picked this idea on Nov 8, 2026.
 ## Data Freshness Badge (Small)
 
 A small badge on every number saying how old it is and which public filing it came from. A visible
-date and source keeps a politically sensitive site honest. Hayden picked this idea on Nov 8, 2026.
+date and source keeps a politically sensitive site honest. Tapping any figure jumps straight to that
+official filing (Hayden also picked this as "Source Link on Every Number"). Hayden picked this idea
+on Nov 8, 2026.
 
 ## Plain-Words Explainer Per Donor (Small)
 
@@ -53,8 +55,9 @@ to notice. A visitor should understand the site in ten seconds. Hayden picked th
 ## Top Donors in Plain Rankings (Small)
 
 A simple top-ten list for any race, with each donor's total and the share of the race's money they
-gave. A ranked list is the quickest thing a visitor can read and share. Hayden picked this idea on
-Nov 8, 2026.
+gave. A ranked list is the quickest thing a visitor can read and share. On each candidate's page
+the top five are also drawn as bars so the size gap is obvious at a glance (Hayden also picked this
+as "Top Donors Shown as a Bar Chart"). Hayden picked this idea on Nov 8, 2026.
 
 ## Small Donors vs Big Donors (Small)
 
@@ -85,3 +88,45 @@ A button on every chart that downloads the exact numbers behind it as a spreadsh
 public filing each number came from named next to it. Every claim needs proof, and letting
 visitors check the numbers themselves builds trust; it pairs with the Data Freshness Badge and the
 Explain This Chart Button. Hayden picked this idea on Nov 8, 2026.
+
+## Ask a Question in Plain Words (Medium)
+
+Type a question like "who gave the most to this candidate?" and get a short answer with a link to
+the filing it came from. A visitor should get what they want in ten seconds, and every answer
+comes with its proof. It answers only from the site's own filing data and says so when it can't
+answer. Hayden picked this idea on Nov 8, 2026.
+
+## Embed Charts on Other Sites (Medium)
+
+A copy-and-paste snippet that lets a blogger or local reporter put any of the site's funding charts
+on their own page, with the source shown under it. Local reporters and bloggers already write about
+these races, and a live chart keeps the numbers current on their page and points readers back here.
+Hayden picked this idea on Nov 8, 2026.
+
+## Money by Industry (Medium)
+
+A candidate's donors grouped by industry, such as energy, banks or health, with each group's share
+shown as a simple bar. A list of names means little, but a few bars answer who is paying in about
+ten seconds. The industry list comes from the job and employer each donor lists in their filing;
+which grouping to use is a swipe card for Hayden at build time. Hayden picked this idea on Nov 8,
+2026.
+
+## Biggest Jump This Month (Small)
+
+A short list of the candidates whose funding grew fastest this month, each with a tiny line chart.
+A moving number gives visitors a reason to come back, and it shares its data with Funding Month by
+Month. Hayden picked this idea on Nov 8, 2026.
+
+## One Donor, Many Spellings (Medium)
+
+Joins donors who appear under slightly different names, such as Acme Inc and ACME Incorporated, so
+their totals are counted together. Split names quietly make the biggest donors look smaller than
+they are. Every join keeps the original spellings and filings visible, so anyone can check it, and
+it makes Search Donors by Name and every top-donor list more accurate. Hayden picked this idea on
+Nov 8, 2026.
+
+## Missing Filing Flags (Small)
+
+A small flag on any campaign that is late or missing a required money report, with the due date
+and a link to the official FEC record. A gap in the paperwork is a fact anyone can check; the flag
+states only what the FEC's own calendar and records show. Hayden picked this idea on Nov 8, 2026.
