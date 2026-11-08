@@ -5,6 +5,14 @@
 Type your address and see who funds the people who represent you. It turns the site from a list
 into something any visitor can use in ten seconds. Hayden picked this idea on Nov 8, 2026.
 
+## Find My Reps by Location (Small)
+
+One button uses your phone's location to find who represents you, so you don't have to type an
+address. A visitor on a phone gets there in one tap. The phone asks permission first, the location
+is used only for that one lookup and never saved, and typing an address still works for anyone who
+says no. It builds on Look Up Your Own Representative, so it comes after that. Hayden picked this
+idea on Nov 8, 2026.
+
 ## Outside Money Map (Medium)
 
 A map that shades each state by how much money from outside the state went into its races; tap a
