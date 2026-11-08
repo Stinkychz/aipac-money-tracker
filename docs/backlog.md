@@ -130,3 +130,27 @@ Nov 8, 2026.
 A small flag on any campaign that is late or missing a required money report, with the due date
 and a link to the official FEC record. A gap in the paperwork is a fact anyone can check; the flag
 states only what the FEC's own calendar and records show. Hayden picked this idea on Nov 8, 2026.
+
+## Report a Mistake Button (Small)
+
+A small button on every page lets a visitor flag a number they think is wrong, and each report
+lands in a private list with the page, the number and the filing it came from. On a politically
+sensitive site, fixing errors fast is how you keep trust. The site is a single static page, so
+where reports are stored (a GitHub issue form, a free form service or a small server) is a swipe
+card for Hayden at build time, and nothing goes live until he says yes. Hayden picked this idea on
+Nov 8, 2026.
+
+## Next Filing Countdown (Small)
+
+A small note saying when the next official FEC filing is due and which numbers will change when it
+arrives. Visitors trust a data site more when they know when it updates; the dates come only from
+the FEC's own filing calendar, and it shares that data with Missing Filing Flags and the Data
+Freshness Badge. Hayden picked this idea on Nov 8, 2026.
+
+## Plain Words for Money Terms (Small)
+
+Tap a term such as super PAC, bundler or itemized donation anywhere on the site and get a
+one-sentence explanation in plain words. A visitor should understand the site in ten seconds, and
+it pairs with the Plain-Words Explainer Per Donor and the Explain This Chart Button. Each
+explanation is neutral and links to the FEC's own definition. Hayden picked this idea on Nov 8,
+2026.
