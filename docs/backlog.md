@@ -31,3 +31,27 @@ A private preview page of a short weekly summary of what changed on the site (ne
 candidates, biggest moves), so Hayden can judge it before anyone is ever emailed. Fresh filings
 arrive all the time and a weekly summary gives visitors a reason to come back; nothing is sent
 without Hayden's yes. Hayden picked this idea on Nov 8, 2026.
+
+## Funding Month by Month (Small)
+
+A simple line chart on each candidate's page showing how much money came in every month of the
+race. A line tells the story of a race in one glance, next to the bar charts and the biggest-jump
+list. Hayden picked this idea on Nov 8, 2026.
+
+## Donors Who Back Both Sides (Medium)
+
+A short list of donors who gave to candidates in opposing parties, with the amounts and a link to
+each filing. Every claim needs proof, and a surprising fact like this is what makes a data site
+worth sharing; the list states only what the filings show. Hayden picked this idea on Nov 8, 2026.
+
+## Explain This Chart Button (Small)
+
+A small button on every chart that tells you in one plain sentence what the chart shows and what
+to notice. A visitor should understand the site in ten seconds. Hayden picked this idea on Nov 8,
+2026.
+
+## Top Donors in Plain Rankings (Small)
+
+A simple top-ten list for any race, with each donor's total and the share of the race's money they
+gave. A ranked list is the quickest thing a visitor can read and share. Hayden picked this idea on
+Nov 8, 2026.
