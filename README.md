@@ -8,6 +8,7 @@ Project (FEC `C00799031`), to each 2026 federal candidate, from public FEC filin
   browser only).
 - **Built-in data:** `build.py` bakes the FEC bulk files into `index.html`, so the page still works when
   the API is rate-limited. Run `python build.py` and push to refresh it.
+- **Download CSV** saves the rows shown (after filters) with FEC source links and a data-as-of date.
 - **"Rejects AIPAC" icons** come only from the sourced `STANCES` list in `index.html`; the FEC does not
   record public statements. Add entries with a source link.
 

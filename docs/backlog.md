@@ -84,6 +84,10 @@ picked this idea on Nov 8, 2026.
 
 ## Download the Raw Numbers (Small)
 
+First step shipped Nov 8: a "Download CSV" button saves the table rows currently shown, each with
+its FEC candidate page, the two committee filing pages and a data-as-of date. Per-chart buttons wait
+until charts exist.
+
 A button on every chart that downloads the exact numbers behind it as a spreadsheet (a CSV file, which opens in Excel), with the
 public filing each number came from named next to it. Every claim needs proof, and letting
 visitors check the numbers themselves builds trust; it pairs with the Data Freshness Badge and the

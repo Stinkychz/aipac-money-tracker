@@ -82,6 +82,7 @@
     <span id="updated"></span>
     <span id="next"></span>
     <button id="refresh">Refresh now</button>
+    <button id="csv" title="Download the rows shown, with the FEC source for each">Download CSV</button>
     <button id="keyToggle">API key</button>
   </div>
   <div class="keybox" id="keybox">
@@ -287,6 +288,7 @@ const icon = (id, label, href) => {
 };
 
 let data = null;
+let shown = [];
 let sort = { k: "total", dir: -1 };
 
 function render() {
@@ -313,6 +315,7 @@ function render() {
     const x = a[sort.k], y = b[sort.k];
     return (typeof x === "number" ? x - y : String(x).localeCompare(String(y))) * sort.dir;
   });
+  shown = rows;
   document.querySelectorAll("th[data-k]").forEach((th) =>
     th.toggleAttribute("aria-sort", th.dataset.k === sort.k));
 
@@ -335,6 +338,22 @@ function render() {
       <td><div class="icons">${icons}</div></td></tr>`;
   }).join("") : `<tr><td colspan="7" style="color:var(--dim)">No candidates match.</td></tr>`;
 }
+
+// ---- CSV of the rows currently shown; each row names the FEC pages its numbers come from.
+function downloadCsv() {
+  const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const head = ["Candidate", "Party", "Race", "AIPAC PAC", "Super PAC for", "Total backing", "Super PAC against",
+    "FEC candidate page", "Source: AIPAC PAC filings", "Source: United Democracy Project filings", "Data as of"];
+  const asOf = data ? new Date(data.at).toISOString().slice(0, 10) : "";
+  const lines = shown.map((c) => [titleCase(c.name), c.party, c.race, c.pac, c.support, c.total, c.oppose,
+    /^[HSP]\d/.test(c.id) ? `https://www.fec.gov/data/candidate/${c.id}/` : "",
+    "https://www.fec.gov/data/committee/C00797670/", "https://www.fec.gov/data/committee/C00799031/", asOf].map(cell).join(","));
+  const blob = new Blob(["﻿" + [head.map(cell).join(","), ...lines].join("\r\n")], { type: "text/csv" });
+  const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: `aipac-money-${asOf}.csv` });
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+document.getElementById("csv").addEventListener("click", downloadCsv);
 
 // ---- Refresh loop with cache
 let timer = null, nextAt = 0;
