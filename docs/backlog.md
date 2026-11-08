@@ -15,3 +15,7 @@ Hayden picked this idea on Nov 8, 2026.
 
 A small badge on every number saying how old it is and which public filing it came from. A visible
 date and source keeps a politically sensitive site honest. Hayden picked this idea on Nov 8, 2026.
+
+## Plain-Words Explainer Per Donor (Small)
+
+Each donor page gets a two-sentence summary in plain words of who they are and where their money went. A visitor should understand the site in ten seconds. Hayden picked this idea on Nov 8, 2026.
