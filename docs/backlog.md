@@ -55,3 +55,11 @@ to notice. A visitor should understand the site in ten seconds. Hayden picked th
 A simple top-ten list for any race, with each donor's total and the share of the race's money they
 gave. A ranked list is the quickest thing a visitor can read and share. Hayden picked this idea on
 Nov 8, 2026.
+
+## Small Donors vs Big Donors (Small)
+
+One bar on any candidate's page showing how much of their money came from ordinary small
+donations and how much from large ones. It answers who a candidate really depends on in one
+glance, and the numbers come straight from the filings. Where the line between small and large
+sits (federal filings itemize gifts over $200) is a swipe card for Hayden at build time. Hayden
+picked this idea on Nov 8, 2026.
