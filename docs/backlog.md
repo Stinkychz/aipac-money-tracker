@@ -78,3 +78,10 @@ For each candidate, how much outside groups spent on ads and mailers attacking t
 groups paid for it, straight from the spending reports those groups file with the FEC. It builds on
 the donor pages and the Outside Money Map, and shows who is paying to sink each candidate. Hayden
 picked this idea on Nov 8, 2026.
+
+## Download the Raw Numbers (Small)
+
+A button on every chart that downloads the exact numbers behind it as a spreadsheet (a CSV file, which opens in Excel), with the
+public filing each number came from named next to it. Every claim needs proof, and letting
+visitors check the numbers themselves builds trust; it pairs with the Data Freshness Badge and the
+Explain This Chart Button. Hayden picked this idea on Nov 8, 2026.
