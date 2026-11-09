@@ -299,6 +299,7 @@ const src = (text, href, label, n) => href ? `<a href="${esc(href)}" title="${la
 
 let data = null;
 let shown = [];
+let renderToken = 0;
 let sort = { k: "total", dir: -1 };
 
 function render() {
@@ -331,7 +332,7 @@ function render() {
   document.querySelectorAll("th[data-k]").forEach((th) =>
     th.toggleAttribute("aria-sort", th.dataset.k === sort.k));
 
-  document.getElementById("rows").innerHTML = rows.length ? rows.map((c) => {
+  const rowHtml = (c) => {
     const pcls = ["DEM", "REP"].includes(c.party) ? "p-" + c.party : "p-other";
     const icons = [
       c.backed && icon("backed", "AIPAC-backed"),
@@ -348,7 +349,22 @@ function render() {
       <td class="num ${c.total ? "" : "zero"}"><b>${money(c.total)}</b></td>
       <td class="num ${c.oppose ? "oppose" : "zero"}">${src(money(c.oppose), c.oppose && ieSrc(c, "oppose"), "United Democracy Project spending against this candidate on the FEC site", c.nOppose)}</td>
       <td><div class="icons">${icons}</div></td></tr>`;
-  }).join("") : `<tr><td colspan="7" style="color:var(--dim)">No candidates match.</td></tr>`;
+  };
+  // Show the first rows at once and add the rest in small batches while the visitor reads.
+  // A newer render() cancels the batches still waiting; `shown` (used by the CSV) is always complete.
+  const tbody = document.getElementById("rows");
+  const FIRST = 40, BATCH = 100;
+  const token = ++renderToken;
+  tbody.innerHTML = rows.length ? rows.slice(0, FIRST).map(rowHtml).join("")
+    : `<tr><td colspan="7" style="color:var(--dim)">No candidates match.</td></tr>`;
+  let done = FIRST;
+  const more = () => {
+    if (token !== renderToken || done >= rows.length) return;
+    tbody.insertAdjacentHTML("beforeend", rows.slice(done, done + BATCH).map(rowHtml).join(""));
+    done += BATCH;
+    setTimeout(more, 0);
+  };
+  setTimeout(more, 0);
 }
 
 // ---- CSV of the rows currently shown; each row names the FEC pages its numbers come from.
