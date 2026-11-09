@@ -222,3 +222,10 @@ Once a week, a check opens every link to a public filing on the site and lists a
 they can be fixed. A dead source link quietly weakens a politically sensitive site. It runs on
 GitHub alongside the hourly data refresh, and the list stays private to Hayden. Hayden picked this
 idea on Nov 8, 2026.
+
+## Stale Figures Turn Amber (Small, after the hourly refresh)
+
+If a number's as-of date gets too old, its Data Freshness Badge turns amber and says how many days
+behind it is. It comes after the hourly refresh goes live, since until then every figure ages the
+same way. Hayden still picks how many days counts as stale and the exact wording before it is built.
+Hayden picked this idea on Nov 8, 2026.
