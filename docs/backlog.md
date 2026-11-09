@@ -166,3 +166,47 @@ one-sentence explanation in plain words. A visitor should understand the site in
 it pairs with the Plain-Words Explainer Per Donor and the Explain This Chart Button. Each
 explanation is neutral and links to the FEC's own definition. Hayden picked this idea on Nov 8,
 2026.
+
+## Spanish Version of the Site (Medium)
+
+A switch at the top that shows every page, label and explanation in Spanish, with the same numbers
+and sources. A data site is only useful to people who can read it, and the plain-words explainers
+are already part of the plan. Names, dollar figures and FEC links stay exactly as filed; only the
+words around them change. Who checks the Spanish wording before it goes live is a swipe card for
+Hayden at build time. Hayden picked this idea on Nov 8, 2026.
+
+## Biggest Gap Between Rivals (Small)
+
+For any race, one line says how far apart the two top candidates are in money raised, with a small
+bar showing the gap. It gives a visitor the key fact about a race in a few seconds, and both totals
+link to their filings. Hayden picked this idea on Nov 8, 2026.
+
+## Which Way Each Industry Leans (Medium)
+
+For each industry, a two-color bar showing how its donations split between the parties, with a link
+to the filings behind it. It answers a visitor's next question after Money by Industry, so it comes
+after that and uses the same industry grouping. The two colors follow the colorblind-friendly
+palette. Hayden picked this idea on Nov 8, 2026.
+
+## Ballot Measures in Plain Words (Small)
+
+Each ballot measure gets a two-sentence summary of what a yes and a no would change, shown next to
+who funds each side. Voters need both before they vote. It needs the ballot measure money tracker
+first, which is not on this list yet, and ballot measure money is filed with each state, not the
+FEC, so which states to start with is a swipe card for Hayden. Every summary is neutral, links to
+the official measure text, and Hayden reads it before it goes live. Hayden picked this idea on Nov 8,
+2026.
+
+## Screen Reader Friendly Charts (Medium)
+
+Every chart on the site gets a plain text version that a screen reader can read aloud, such as
+"Top donor: X, $50,000, 40% of the total." It also backs each chart with its numbers, and it pairs
+with the Explain This Chart Button and the CSV downloads. It applies to each chart as that chart is
+built. Hayden picked this idea on Nov 8, 2026.
+
+## Broken Source Link Checker (Small)
+
+Once a week, a check opens every link to a public filing on the site and lists any that broke, so
+they can be fixed. A dead source link quietly weakens a politically sensitive site. It runs on
+GitHub alongside the existing data refresh, and the list stays private to Hayden. Hayden picked this
+idea on Nov 8, 2026.
