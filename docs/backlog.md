@@ -1,3 +1,5 @@
+_Nov 8, 2026 sweep: nothing ready. The Small items need donor, monthly or filing-calendar data the one-page table does not have, or new wording/choices for Hayden (term definitions, report storage); the hourly refresh waits on his go._
+
 # Election Money Tracker: ideas to build
 
 ## Hourly Data Refresh (Small, waiting on Hayden)
