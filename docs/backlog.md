@@ -57,8 +57,10 @@ worth sharing; the list states only what the filings show. Hayden picked this id
 ## Explain This Chart Button (Small)
 
 A small button on every chart that tells you in one plain sentence what the chart shows and what
-to notice. A visitor should understand the site in ten seconds. Hayden picked this idea on Nov 8,
-2026.
+to notice. A visitor should understand the site in ten seconds. Every chart also gets a plain text
+version of its numbers that a screen reader can read aloud, such as "Top donor: X, $50,000, 40% of
+the total" (Hayden also picked this as "Screen Reader Friendly Charts"). Hayden picked this idea on
+Nov 8, 2026.
 
 ## Top Donors in Plain Rankings (Small)
 
@@ -179,30 +181,29 @@ Hayden at build time. Hayden picked this idea on Nov 8, 2026.
 
 For any race, one line says how far apart the two top candidates are in money raised, with a small
 bar showing the gap. It gives a visitor the key fact about a race in a few seconds, and both totals
-link to their filings. Hayden picked this idea on Nov 8, 2026.
+link to their filings. It needs each candidate's total money raised from the FEC, not just the
+AIPAC money the site tracks today. Hayden picked this idea on Nov 8, 2026.
 
 ## Which Way Each Industry Leans (Medium)
 
 For each industry, a two-color bar showing how its donations split between the parties, with a link
 to the filings behind it. It answers a visitor's next question after Money by Industry, so it comes
-after that and uses the same industry grouping. The two colors follow the colorblind-friendly
-palette. Hayden picked this idea on Nov 8, 2026.
+after that and uses the same industry grouping. Each side's percentage is written on the bar, so it
+never relies on color alone. Hayden picked this idea on Nov 8, 2026.
+
+## Ballot Measure Money Tracker (Medium)
+
+Who is paying for and against each ballot measure, with the amounts and a link to each filing.
+Ballot measure money is filed with each state, not the FEC, so which states to start with is a
+swipe card for Hayden at build time. Hayden picked this idea on Nov 8, 2026.
 
 ## Ballot Measures in Plain Words (Small)
 
 Each ballot measure gets a two-sentence summary of what a yes and a no would change, shown next to
-who funds each side. Voters need both before they vote. It needs the ballot measure money tracker
-first, which is not on this list yet, and ballot measure money is filed with each state, not the
-FEC, so which states to start with is a swipe card for Hayden. Every summary is neutral, links to
+who funds each side. Voters need both before they vote. It builds on the Ballot Measure Money
+Tracker, so it comes after that. Every summary is neutral, links to
 the official measure text, and Hayden reads it before it goes live. Hayden picked this idea on Nov 8,
 2026.
-
-## Screen Reader Friendly Charts (Medium)
-
-Every chart on the site gets a plain text version that a screen reader can read aloud, such as
-"Top donor: X, $50,000, 40% of the total." It also backs each chart with its numbers, and it pairs
-with the Explain This Chart Button and the CSV downloads. It applies to each chart as that chart is
-built. Hayden picked this idea on Nov 8, 2026.
 
 ## Broken Source Link Checker (Small)
 
