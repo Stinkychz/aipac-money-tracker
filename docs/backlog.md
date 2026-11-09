@@ -258,3 +258,13 @@ link to the filing behind every number. Yes and no are always side by side, same
 Hayden picked this idea on Nov 8, 2026 and said on Nov 9, 2026 to merge it into this site. The full
 plan, fairness rules and steps are in [ballot-measures.md](ballot-measures.md). Nothing goes public
 until Hayden has seen it.
+
+Progress Nov 9, 2026 (step 1, part 1): `ballot.py` + `test_ballot.py` total the yes and no sides from
+parsed filings (newest amendment wins, committee-to-committee money shown as passed through and not
+double counted, donors on both sides, empty side); 6 tests pass. Found in the real bulk file
+(`CalAccess/DATA/` in dbwebexport.zip): `BALLOT_MEASURES_CD.TSV` stops at 2009, and 2026 cover sheets
+(`CVR_CAMPAIGN_DISCLOSURE_CD.TSV`, ELECT_DATE 11/3/2026) have free-text BAL_NUM ("TBD", "Vot", local
+letters) with SUP_OPP_CD S/O. Left: (a) the list of statewide Nov 2026 measures with official names
+and results is typed by hand, a content choice, so it needs an options card for Hayden in
+docs/decisions.md; (b) a streaming reader of RCPT_CD.TSV (3.9 GB) into `side_totals`; (c) check totals
+against the state's own; (d) the page, CSV, phone screenshots.
