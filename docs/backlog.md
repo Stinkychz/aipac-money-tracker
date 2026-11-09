@@ -1,4 +1,4 @@
-_Nov 8, 2026 sweep: nothing ready. The three newest picks (refresh switch on phone, refresh log page, go-live notice) all hang on the hourly refresh, which waits on Hayden's go; the older Small items need data the one-page table lacks or wording choices for Hayden._
+_Nov 9, 2026 sweep: nothing ready. The four newest picks (refresh switch on phone, refresh log page, go-live notice, figures update while open) all hang on the hourly refresh, which waits on Hayden's go; the older Small items need data the one-page table lacks or wording/look choices for Hayden._
 
 # Election Money Tracker: ideas to build
 
