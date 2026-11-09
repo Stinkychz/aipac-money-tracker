@@ -250,3 +250,11 @@ When the hourly refresh brings new numbers, a page you already have open updates
 
 The money table shows its first rows right away and fills in the rest while you read, instead of making you wait for everything. Table figures now show how many filed records add up to them, which gives the table more to load, and you like things fast. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
 
+## Ballot Measure Money View (Large)
+
+A "Ballot measures" view on this site: for each California measure on the Nov 2026 ballot, the yes
+total, the no total, the top donors on each side and the result, from Cal-Access filings, with a
+link to the filing behind every number. Yes and no are always side by side, same size, no adjectives.
+Hayden picked this idea on Nov 8, 2026 and said on Nov 9, 2026 to merge it into this site. The full
+plan, fairness rules and steps are in [ballot-measures.md](ballot-measures.md). Nothing goes public
+until Hayden has seen it.
