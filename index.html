@@ -61,6 +61,7 @@
   .party { font: 11px ui-monospace, Consolas, monospace; padding: 1px 5px; border: 1px solid; margin-left: 6px; }
   .p-DEM { color: var(--dem); } .p-REP { color: var(--rep); } .p-other { color: var(--ind); }
   .zero { color: #4b5563; }
+  td.num a { color: inherit; text-decoration: underline; text-decoration-color: var(--pro); text-underline-offset: 3px; padding: 4px 0; display: inline-block; }
   .oppose { color: var(--target); }
   .icons { display: flex; gap: 6px; }
   .icon { width: 20px; height: 20px; display: inline-block; }
@@ -96,9 +97,9 @@
   </div>
 
   <div class="kpis">
-    <div class="kpi"><b id="kTotal">–</b><span>Spent backing candidates</span><small class="src">As of <time class="asof">–</time> · <a href="https://www.fec.gov/data/committee/C00797670/">AIPAC PAC</a> · <a href="https://www.fec.gov/data/committee/C00799031/">UDP</a></small></div>
+    <div class="kpi"><b id="kTotal">–</b><span>Spent backing candidates</span><small class="src">As of <time class="asof">–</time> · <a href="https://www.fec.gov/data/committee/C00797670/">AIPAC PAC</a> · <a href="https://www.fec.gov/data/committee/C00799031/">Super PAC</a></small></div>
     <div class="kpi"><b id="kOppose">–</b><span>Spent against candidates</span><small class="src">As of <time class="asof">–</time> · <a href="https://www.fec.gov/data/committee/C00799031/">United Democracy Project</a></small></div>
-    <div class="kpi"><b id="kBacked">–</b><span>Candidates backed</span><small class="src">As of <time class="asof">–</time> · <a href="https://www.fec.gov/data/committee/C00797670/">AIPAC PAC</a> · <a href="https://www.fec.gov/data/committee/C00799031/">UDP</a></small></div>
+    <div class="kpi"><b id="kBacked">–</b><span>Candidates backed</span><small class="src">As of <time class="asof">–</time> · <a href="https://www.fec.gov/data/committee/C00797670/">AIPAC PAC</a> · <a href="https://www.fec.gov/data/committee/C00799031/">Super PAC</a></small></div>
     <div class="kpi"><b id="kTargeted">–</b><span>Candidates targeted</span><small class="src">As of <time class="asof">–</time> · <a href="https://www.fec.gov/data/committee/C00799031/">United Democracy Project</a></small></div>
   </div>
 
@@ -289,6 +290,12 @@ const icon = (id, label, href) => {
   return href ? `<a href="${esc(href)}" title="${label} (source)">${svg}</a>` : svg;
 };
 
+// Every dollar figure in the table links to the FEC page it comes from.
+const PAC_SRC = `https://www.fec.gov/data/disbursements/?committee_id=${AIPAC_PAC}&two_year_transaction_period=${CYCLE}`;
+const ieSrc = (c, kind) => /^[HSP]\d/.test(c.id)
+  ? `https://www.fec.gov/data/independent-expenditures/?committee_id=${UDP}&candidate_id=${c.id}&support_oppose_indicator=${kind === "support" ? "S" : "O"}&two_year_transaction_period=${CYCLE}` : null;
+const src = (text, href, label) => href ? `<a href="${esc(href)}" title="${label}">${text}</a>` : text;
+
 let data = null;
 let shown = [];
 let sort = { k: "total", dir: -1 };
@@ -335,10 +342,10 @@ function render() {
     return `<tr>
       <td><span class="name">${fecLink ? `<a href="${fecLink}" style="color:inherit;text-decoration:none">${nm}</a>` : nm}</span><span class="party ${pcls}">${esc((c.party || "?").slice(0, 3))}</span></td>
       <td>${esc(c.race)}</td>
-      <td class="num ${c.pac ? "" : "zero"}">${money(c.pac)}</td>
-      <td class="num ${c.support ? "" : "zero"}">${money(c.support)}</td>
+      <td class="num ${c.pac ? "" : "zero"}">${src(money(c.pac), c.pac && PAC_SRC, "AIPAC PAC contributions on the FEC site")}</td>
+      <td class="num ${c.support ? "" : "zero"}">${src(money(c.support), c.support && ieSrc(c, "support"), "United Democracy Project spending for this candidate on the FEC site")}</td>
       <td class="num ${c.total ? "" : "zero"}"><b>${money(c.total)}</b></td>
-      <td class="num ${c.oppose ? "oppose" : "zero"}">${money(c.oppose)}</td>
+      <td class="num ${c.oppose ? "oppose" : "zero"}">${src(money(c.oppose), c.oppose && ieSrc(c, "oppose"), "United Democracy Project spending against this candidate on the FEC site")}</td>
       <td><div class="icons">${icons}</div></td></tr>`;
   }).join("") : `<tr><td colspan="7" style="color:var(--dim)">No candidates match.</td></tr>`;
 }

@@ -27,7 +27,7 @@ official filing (Hayden also picked this as "Source Link on Every Number"). Hayd
 on Nov 8, 2026.
 
 First step shipped Nov 8: each of the four top figures shows its data-as-of date and links to the FEC
-committee page it comes from. Still to do: the same on table numbers and on charts once they exist.
+committee page it comes from. Second step shipped Nov 8: every nonzero table figure (PAC, super PAC for and against) links to its FEC page. Still to do: the same on charts once they exist.
 
 ## Plain-Words Explainer Per Donor (Small)
 
