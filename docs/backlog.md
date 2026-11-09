@@ -1,5 +1,11 @@
 # Election Money Tracker: ideas to build
 
+## Hourly Data Refresh (Small, waiting on Hayden)
+
+The hourly FEC refresh is written (.github/workflows/refresh.yml, kept on the PC, not uploaded) but
+off. Once it's uploaded, GitHub updates the live site's numbers every hour by itself; until then
+they change only when rebuilt by hand. Hayden said "wait" on Nov 9, 2026; upload and push it when he says go.
+
 ## Look Up Your Own Representative (Medium)
 
 Type your address and see who funds the people who represent you. It turns the site from a list
@@ -212,5 +218,5 @@ the official measure text, and Hayden reads it before it goes live. Hayden picke
 
 Once a week, a check opens every link to a public filing on the site and lists any that broke, so
 they can be fixed. A dead source link quietly weakens a politically sensitive site. It runs on
-GitHub alongside the existing data refresh, and the list stays private to Hayden. Hayden picked this
+GitHub alongside the hourly data refresh, and the list stays private to Hayden. Hayden picked this
 idea on Nov 8, 2026.
