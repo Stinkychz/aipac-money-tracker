@@ -299,7 +299,7 @@ const src = (text, href, label, n) => href ? `<a href="${esc(href)}" title="${la
 
 let data = null;
 let shown = [];
-let renderToken = 0;
+let renderToken = 0, renderedRows = 0, lastDone = 0;
 let sort = { k: "total", dir: -1 };
 
 function render() {
@@ -353,15 +353,19 @@ function render() {
   // Show the first rows at once and add the rest in small batches while the visitor reads.
   // A newer render() cancels the batches still waiting; `shown` (used by the CSV) is always complete.
   const tbody = document.getElementById("rows");
-  const FIRST = 40, BATCH = 100;
+  // A reader who has scrolled down keeps every row they had, so a reload never shortens the page under them.
+  const BATCH = 100;
+  const FIRST = window.scrollY > 0 ? Math.max(40, renderedRows) : 40;
   const token = ++renderToken;
   tbody.innerHTML = rows.length ? rows.slice(0, FIRST).map(rowHtml).join("")
     : `<tr><td colspan="7" style="color:var(--dim)">No candidates match.</td></tr>`;
   let done = FIRST;
+  renderedRows = Math.min(done, rows.length);
   const more = () => {
     if (token !== renderToken || done >= rows.length) return;
     tbody.insertAdjacentHTML("beforeend", rows.slice(done, done + BATCH).map(rowHtml).join(""));
     done += BATCH;
+    renderedRows = Math.min(done, rows.length);
     setTimeout(more, 0);
   };
   setTimeout(more, 0);
