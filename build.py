@@ -33,7 +33,8 @@ def party(p):
 
 def main():
     yy = str(CYCLE)[2:]
-    cands = defaultdict(lambda: {"pac": 0.0, "support": 0.0, "oppose": 0.0})
+    cands = defaultdict(lambda: {"pac": 0.0, "support": 0.0, "oppose": 0.0,
+                                    "nPac": 0, "nSupport": 0, "nOppose": 0})
 
     # Candidate names and races; later cycles first so the newest record wins.
     info = {}
@@ -51,6 +52,7 @@ def main():
         f = line.split("|")
         if f[0] == AIPAC_PAC and f[16] and f[19] != "X":
             cands[f[16]]["pac"] += float(f[14])
+            cands[f[16]]["nPac"] += 1
 
     seen = {}
     text = get(f"{CYCLE}/independent_expenditure_{CYCLE}.csv").decode("latin-1")
@@ -63,7 +65,9 @@ def main():
         seen[key] = r
     for r in seen.values():
         c = cands[r["cand_id"]]
-        c["support" if r["sup_opp"] == "S" else "oppose"] += float(r["exp_amo"] or 0)
+        kind = "support" if r["sup_opp"] == "S" else "oppose"
+        c[kind] += float(r["exp_amo"] or 0)
+        c["n" + kind.capitalize()] += 1
         info.setdefault(r["cand_id"], {"name": r["cand_name"], "party": party(r["cand_pty_aff"]),
                                        "office": r["can_office"], "state": r["can_office_state"],
                                        "district": r["can_office_dis"]})
@@ -71,7 +75,7 @@ def main():
     out = []
     for cid, money in cands.items():
         i = info.get(cid, {"name": cid, "party": "?", "office": cid[0], "state": cid[2:4], "district": ""})
-        out.append({"id": cid, **i, **{k: round(v, 2) for k, v in money.items()}})
+        out.append({"id": cid, **i, **{k: round(v, 2) if isinstance(v, float) else v for k, v in money.items()}})
 
     out.sort(key=lambda c: c["id"])
     page = PAGE.read_text(encoding="utf-8")
