@@ -1,4 +1,4 @@
-_Nov 8, 2026 sweep: nothing ready. The Small items need donor, monthly or filing-calendar data the one-page table does not have, or new wording/choices for Hayden (term definitions, report storage); the hourly refresh waits on his go._
+_Nov 8, 2026 sweep: nothing ready. The three newest picks (refresh switch on phone, refresh log page, go-live notice) all hang on the hourly refresh, which waits on Hayden's go; the older Small items need data the one-page table lacks or wording choices for Hayden._
 
 # Election Money Tracker: ideas to build
 
@@ -229,3 +229,16 @@ If a number's as-of date gets too old, its Data Freshness Badge turns amber and 
 behind it is. It comes after the hourly refresh goes live, since until then every figure ages the
 same way. Hayden still picks how many days counts as stale and the exact wording before it is built.
 Hayden picked this idea on Nov 8, 2026.
+
+## Hourly Refresh Switch On Phone (Small)
+
+A single switch on your phone turns the hourly money data refresh on or off, with the last refresh time beside it. The hourly data refresh is built but sitting off until you say go, so you shouldn't have to wait for a PC session to flip it. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
+
+## Refresh Log on the Site (Small)
+
+A small page listing the last ten data refreshes with the time and how many figures changed. The hourly refresh is ready but switched off until you say go, and a visible log shows you it works before you flip it on. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
+
+## Hourly Refresh Goes Live Notice (Small)
+
+When you say go on the hourly data refresh, your phone tells you the first refresh ran and what changed. The hourly refresh is ready but waiting for your go, and you dislike being left out of the loop. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
+
