@@ -1,4 +1,4 @@
-_Nov 9, 2026 sweep: nothing ready. The four newest picks (refresh switch on phone, refresh log page, go-live notice, figures update while open) all hang on the hourly refresh, which waits on Hayden's go; the older Small items need data the one-page table lacks or wording/look choices for Hayden._
+_Nov 9, 2026 sweep: nothing ready. The four newest Small picks (refresh switch on phone, refresh log page, go-live notice, figures update while open) all hang on the hourly refresh, which waits on Hayden's go; the newest pick (table opens before all rows load) is Medium and the table is one page; the older Small items need data the one-page table lacks or wording/look choices for Hayden._
 
 # Election Money Tracker: ideas to build
 
@@ -245,4 +245,8 @@ When you say go on the hourly data refresh, your phone tells you the first refre
 ## Figures Update While Open (Small)
 
 When the hourly refresh brings new numbers, a page you already have open updates on its own without reloading. Three refresh picks are waiting on the hourly refresh go, and open pages would otherwise show stale numbers. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
+
+## Table Opens Before All Rows Load (Medium)
+
+The money table shows its first rows right away and fills in the rest while you read, instead of making you wait for everything. Table figures now show how many filed records add up to them, which gives the table more to load, and you like things fast. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
 
