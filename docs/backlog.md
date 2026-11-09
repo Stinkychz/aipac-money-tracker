@@ -26,6 +26,9 @@ date and source keeps a politically sensitive site honest. Tapping any figure ju
 official filing (Hayden also picked this as "Source Link on Every Number"). Hayden picked this idea
 on Nov 8, 2026.
 
+First step shipped Nov 8: each of the four top figures shows its data-as-of date and links to the FEC
+committee page it comes from. Still to do: the same on table numbers and on charts once they exist.
+
 ## Plain-Words Explainer Per Donor (Small)
 
 Each donor page gets a two-sentence summary in plain words of who they are and where their money went. A visitor should understand the site in ten seconds. Hayden picked this idea on Nov 8, 2026.

@@ -39,6 +39,8 @@
   .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
   .kpi { background: var(--panel); border: 1px solid var(--line); padding: 12px 14px; }
   .kpi b { display: block; font-size: 24px; font-variant-numeric: tabular-nums; }
+  .kpi small.src { display: block; margin-top: 4px; color: var(--dim); font-size: 11px; }
+  .kpi small.src a { color: inherit; }
   .kpi span { color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
   .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
   input, select, button { background: var(--panel); color: var(--text); border: 1px solid var(--line);
@@ -94,10 +96,10 @@
   </div>
 
   <div class="kpis">
-    <div class="kpi"><b id="kTotal">–</b><span>Spent backing candidates</span></div>
-    <div class="kpi"><b id="kOppose">–</b><span>Spent against candidates</span></div>
-    <div class="kpi"><b id="kBacked">–</b><span>Candidates backed</span></div>
-    <div class="kpi"><b id="kTargeted">–</b><span>Candidates targeted</span></div>
+    <div class="kpi"><b id="kTotal">–</b><span>Spent backing candidates</span><small class="src">As of <time class="asof">–</time> · <a href="https://www.fec.gov/data/committee/C00797670/">AIPAC PAC</a> · <a href="https://www.fec.gov/data/committee/C00799031/">UDP</a></small></div>
+    <div class="kpi"><b id="kOppose">–</b><span>Spent against candidates</span><small class="src">As of <time class="asof">–</time> · <a href="https://www.fec.gov/data/committee/C00799031/">United Democracy Project</a></small></div>
+    <div class="kpi"><b id="kBacked">–</b><span>Candidates backed</span><small class="src">As of <time class="asof">–</time> · <a href="https://www.fec.gov/data/committee/C00797670/">AIPAC PAC</a> · <a href="https://www.fec.gov/data/committee/C00799031/">UDP</a></small></div>
+    <div class="kpi"><b id="kTargeted">–</b><span>Candidates targeted</span><small class="src">As of <time class="asof">–</time> · <a href="https://www.fec.gov/data/committee/C00799031/">United Democracy Project</a></small></div>
   </div>
 
   <div class="controls">
@@ -304,6 +306,8 @@ function render() {
   document.getElementById("kOppose").textContent = short(sum("oppose"));
   document.getElementById("kBacked").textContent = all.filter((c) => c.backed).length;
   document.getElementById("kTargeted").textContent = all.filter((c) => c.targeted).length;
+  const asOfText = new Date(data.at).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" });
+  document.querySelectorAll("time.asof").forEach((t) => { t.textContent = asOfText; t.dateTime = new Date(data.at).toISOString().slice(0, 10); });
 
   const rows = all.filter((c) =>
     (!q || (c.name || "").includes(q) || c.state === q || c.race.toUpperCase().includes(q)) &&
