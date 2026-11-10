@@ -1,6 +1,6 @@
 # Ballot Measure Money: the plan (a section of the Election Money Tracker)
 
-Status: step 1 started (ballot.py totals logic, tested; see backlog), nothing public. Hayden picked this idea on Nov 8, 2026 and on Nov 9, 2026 said to merge it into the Election Money Tracker site (no separate site). It was the folder `ballot-money`.
+Status: step 1 in progress (ballot.py: yes/no totals, out-of-state total, top-3 share, and the streaming reader for the bulk zip, all tested; still to do: wire it to the real download, pick the Nov 2026 measures and check against the state's totals), nothing public. Hayden picked this idea on Nov 8, 2026 and on Nov 9, 2026 said to merge it into the Election Money Tracker site (no separate site). It was the folder `ballot-money`.
 
 ## What it is, in one paragraph
 A public page that answers "who paid for the yes side and who paid for the no side?" for each

@@ -233,3 +233,5 @@ link to the filing behind every number. Yes and no are always side by side, same
 Hayden picked this idea on Nov 8, 2026 and said on Nov 9, 2026 to merge it into this site. The full
 plan, fairness rules and steps are in [ballot-measures.md](ballot-measures.md). Nothing goes public
 until Hayden has seen it.
+
+Progress Nov 9: step 1 code done and tested in ballot.py (totals, out-of-state, top-3 share, bulk-zip reader). Left: run it on the real Cal-Access download, map the Nov 2026 measures to their committees, check against the state's totals, then the page (step 2).
