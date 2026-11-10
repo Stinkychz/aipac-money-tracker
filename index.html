@@ -111,7 +111,8 @@
   <form class="controls" id="addrForm" autocomplete="street-address">
     <input type="text" id="addr" placeholder="Your street address, city and state" size="40" aria-label="Your address">
     <button type="submit" id="addrGo">Find my races</button>
-    <span id="addrMsg" class="cnt" role="status">Your address goes only to the US Census Bureau to find your district. It is never saved.</span>
+    <button type="button" id="locGo" hidden>Use my location</button>
+    <span id="addrMsg" class="cnt" role="status">Your address (or location, if you tap the button) goes only to the US Census Bureau to find your district. It is never saved.</span>
   </form>
 
   <div class="controls">
@@ -317,38 +318,56 @@ let renderToken = 0, renderedRows = 0, lastDone = 0;
 let sort = { k: "total", dir: -1 };
 
 let mine = null;  // {state, district} after an address lookup; the address itself is never stored
-function lookupAddress(address) {
-  // The Census geocoder answers JSONP, so the browser can ask it directly. The address goes only to the Census Bureau.
+function censusLookup(query) {
+  // The Census geocoder answers JSONP, so the browser can ask it directly. Only the address or the one-time location goes to the Census Bureau.
   return new Promise((resolve, reject) => {
     const cb = "cb" + Date.now(), el = document.createElement("script");
     const done = (fn, v) => { clearTimeout(t); delete window[cb]; el.remove(); fn(v); };
     const t = setTimeout(() => done(reject, new Error("timeout")), 15000);
     window[cb] = (r) => {
-      const m = r && r.result && r.result.addressMatches && r.result.addressMatches[0];
-      const g = m && m.geographies;
+      const res = r && r.result;
+      const m = res && res.addressMatches && res.addressMatches[0];
+      const g = (m && m.geographies) || (res && res.geographies);
       const d = g && Object.entries(g).find(([k]) => /Congressional Districts/.test(k));
       const row = d && d[1][0];
       if (!row) return done(resolve, null);
-      done(resolve, { state: (m.addressComponents && m.addressComponents.state) || row.STATE_ABBREVIATION || "", district: /^\d+$/.test(row.BASENAME) ? row.BASENAME.padStart(2, "0") : "00" });
+      const st = g["States"] && g["States"][0];
+      done(resolve, { state: (m && m.addressComponents && m.addressComponents.state) || (st && st.STUSAB) || row.STATE_ABBREVIATION || "", district: /^\d+$/.test(row.BASENAME) ? row.BASENAME.padStart(2, "0") : "00" });
     };
     el.onerror = () => done(reject, new Error("network"));
-    el.src = "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?benchmark=Public_AR_Current&vintage=Current_Current&layers=all&format=jsonp&callback=" + cb + "&address=" + encodeURIComponent(address);
+    el.src = "https://geocoding.geo.census.gov/geocoder/geographies/" + query + "&benchmark=Public_AR_Current&vintage=Current_Current&layers=all&format=jsonp&callback=" + cb;
     document.head.appendChild(el);
   });
 }
-function clearMine() { mine = null; document.getElementById("addrMsg").textContent = "Your address goes only to the US Census Bureau to find your district. It is never saved."; render(); }
+const lookupAddress = (address) => censusLookup("onelineaddress?address=" + encodeURIComponent(address));
+const lookupCoords = (lat, lon) => censusLookup("coordinates?x=" + encodeURIComponent(lon) + "&y=" + encodeURIComponent(lat));
+function showMine(r) {
+  const msg = document.getElementById("addrMsg");
+  if (!r) { msg.textContent = "No match. Try the full address with city and state."; return; }
+  mine = r;
+  msg.innerHTML = `Showing the races for ${esc(r.state)} district ${r.district === "00" ? "(at large)" : esc(r.district)}, your Senate race and President. <a href="#" id="addrClear">Show all</a>`;
+  document.getElementById("addrClear").onclick = (ev) => { ev.preventDefault(); document.getElementById("addr").value = ""; clearMine(); };
+  render();
+}
+if (navigator.geolocation) {
+  const lb = document.getElementById("locGo"); lb.hidden = false;
+  lb.onclick = () => {
+    const msg = document.getElementById("addrMsg"); msg.textContent = "Asking your phone for your location…";
+    navigator.geolocation.getCurrentPosition(async (p) => {
+      msg.textContent = "Looking up…";
+      try { showMine(await lookupCoords(p.coords.latitude, p.coords.longitude)); }
+      catch (err) { msg.textContent = "The lookup service did not answer. Try again, or type your address."; }
+    }, () => { msg.textContent = "Location was not shared. You can type your address instead."; }, { timeout: 15000, maximumAge: 600000 });
+  };
+}
+function clearMine() { mine = null; document.getElementById("addrMsg").textContent = "Your address (or location, if you tap the button) goes only to the US Census Bureau to find your district. It is never saved."; render(); }
 document.getElementById("addrForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const msg = document.getElementById("addrMsg"), a = document.getElementById("addr").value.trim();
   if (!a) return clearMine();
   msg.textContent = "Looking up…";
   try {
-    const r = await lookupAddress(a);
-    if (!r) { msg.textContent = "No match. Try the full address with city and state."; return; }
-    mine = r;
-    msg.innerHTML = `Showing the races for ${esc(r.state)} district ${r.district === "00" ? "(at large)" : esc(r.district)}, your Senate race and President. <a href="#" id="addrClear">Show all</a>`;
-    document.getElementById("addrClear").onclick = (ev) => { ev.preventDefault(); document.getElementById("addr").value = ""; clearMine(); };
-    render();
+    showMine(await lookupAddress(a));
   } catch (err) { msg.textContent = "The lookup service did not answer. Try again, or search by state above."; }
 });
 

@@ -4,14 +4,6 @@ Nothing ready (2026-11-09): the page holds only AIPAC PAC and super PAC totals p
 
 Nothing ready (2026-11-09): the page only holds per-candidate AIPAC totals, so donor, industry, rival-gap and filing-calendar items need new FEC data plus look/wording decisions from Hayden; the switch needs his GitHub token; the Ballot Measure Money View (ballot.py, test_ballot.py) is being built by job c1620da75f0e.
 
-## Find My Reps by Location (Small)
-
-One button uses your phone's location to find who represents you, so you don't have to type an
-address. A visitor on a phone gets there in one tap. The phone asks permission first, the location
-is used only for that one lookup and never saved, and typing an address still works for anyone who
-says no. It builds on Look Up Your Own Representative, so it comes after that. Hayden picked this
-idea on Nov 8, 2026.
-
 ## Outside Money Map (Medium)
 
 A map that shades each state by how much money from outside the state went into its races; tap a
