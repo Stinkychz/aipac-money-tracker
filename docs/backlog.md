@@ -1,5 +1,7 @@
 # Election Money Tracker: ideas to build
 
+Nothing ready (2026-11-09): the page only holds per-candidate AIPAC totals, so donor, industry, rival-gap and filing-calendar items need new FEC data plus look/wording decisions from Hayden; the switch needs his GitHub token; the Ballot Measure Money View (ballot.py, test_ballot.py) is being built by job c1620da75f0e.
+
 ## Look Up Your Own Representative (Medium)
 
 Type your address and see who funds the people who represent you. It turns the site from a list
