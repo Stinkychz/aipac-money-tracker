@@ -234,10 +234,6 @@ A small page listing the last ten data refreshes with the time and how many figu
 
 When you say go on the hourly data refresh, your phone tells you the first refresh ran and what changed. The hourly refresh is ready but waiting for your go, and you dislike being left out of the loop. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
 
-## Figures Update While Open (Small)
-
-When the hourly refresh brings new numbers, a page you already have open updates on its own without reloading. Three refresh picks are waiting on the hourly refresh go, and open pages would otherwise show stale numbers. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
-
 ## Ballot Measure Money View (Large)
 
 A "Ballot measures" view on this site: for each California measure on the Nov 2026 ballot, the yes

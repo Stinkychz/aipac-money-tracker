@@ -318,6 +318,12 @@ function render() {
   const asOfText = new Date(data.at).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" });
   document.querySelectorAll("time.asof").forEach((t) => { t.textContent = asOfText; t.dateTime = new Date(data.at).toISOString().slice(0, 10); });
 
+  const log = (SNAPSHOT && SNAPSHOT.log) || [];
+  document.getElementById("reflog").hidden = !log.length;
+  document.getElementById("reflogList").innerHTML = log.map((e) =>
+    `<li>${new Date(e.at).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}: ` +
+    `${e.changed} ${e.changed === 1 ? "candidate" : "candidates"} changed</li>`).join("");
+
   const rows = all.filter((c) =>
     (!q || (c.name || "").includes(q) || c.state === q || c.race.toUpperCase().includes(q)) &&
     (!office || c.office === office) &&
@@ -442,6 +448,27 @@ document.getElementById("keySave").addEventListener("click", () => {
   document.getElementById("keybox").classList.remove("open");
   refresh();
 });
+
+// Pick up a newer built-in snapshot (the hourly refresh republishes this page) without a reload.
+const snapshotIn = (html) => {
+  const m = /\/\*SNAPSHOT\*\/([\s\S]*?)\/\*END\*\//.exec(html);
+  if (!m) return null;
+  try { return JSON.parse(m[1]); } catch { return null; }
+};
+async function checkNewSnapshot() {
+  if (!/^https?:$/.test(location.protocol)) return;
+  try {
+    const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" });
+    const snap = r.ok ? snapshotIn(await r.text()) : null;
+    if (snap && snap.candidates && (!data || snap.at > data.at)) { data = snap; showUpdated(); render(); }
+  } catch {}
+}
+setInterval(checkNewSnapshot, 10 * 60 * 1000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) checkNewSnapshot(); });
+
+document.getElementById("refreshList").innerHTML = REFRESH_LOG.length ? REFRESH_LOG.map((e) =>
+  `<li>${new Date(e.at).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}: ${e.changed} candidate${e.changed === 1 ? "" : "s"} changed</li>`).join("")
+  : "<li>No refreshes recorded yet.</li>";
 
 // Start from the cache when it is fresh enough, so reloading doesn't spend the rate limit.
 try { data = JSON.parse(store.get(CACHE_KEY)); } catch { data = null; }
