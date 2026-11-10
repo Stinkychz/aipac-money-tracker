@@ -224,11 +224,11 @@ Hayden picked this idea on Nov 8, 2026.
 
 ## Hourly Refresh Switch On Phone (Small)
 
-A single switch on your phone turns the hourly money data refresh on or off, with the last refresh time beside it. The hourly data refresh is built but sitting off until you say go, so you shouldn't have to wait for a PC session to flip it. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
+A single switch on your phone turns the hourly money data refresh on or off, with the last refresh time beside it. The hourly data refresh went live on Nov 9 (workflow "Refresh FEC data", .github/workflows/refresh.yml, active), so this switch would enable/disable that workflow from the phone through a new HQ hub endpoint (hq/hub). Not built: it needs a new hub endpoint and phone screen plus GitHub sign-in on the hub; taken up by the next step. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
 
 ## Hourly Refresh Goes Live Notice (Small)
 
-When you say go on the hourly data refresh, your phone tells you the first refresh ran and what changed. The hourly refresh is ready but waiting for your go, and you dislike being left out of the loop. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
+When you say go on the hourly data refresh, your phone tells you the first refresh ran and what changed. The hourly refresh is already live (go was given Nov 9), no run had happened by 01:30Z Nov 10, so this is now "your phone tells you the first refresh ran and what changed"; it would be a new alert in hq/hub/alerts.mjs reading gh run list --workflow=refresh.yml. Not built yet. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
 
 ## Ballot Measure Money View (Large)
 
