@@ -1,11 +1,4 @@
-_Nov 9, 2026 sweep: nothing ready. The four newest Small picks (refresh switch on phone, refresh log page, go-live notice, figures update while open) all hang on the hourly refresh, which waits on Hayden's go; the older Small items need data the one-page table lacks or wording/look choices for Hayden._
-
 # Election Money Tracker: ideas to build
-
-## Push Hourly Refresh (Small, blocked)
-
-Hayden said go on Nov 10, 2026. The workflow is committed locally but GitHub rejected the push: the sign-in lacks the
-`workflow` permission. Needs Hayden to run `gh auth refresh -h github.com -s workflow` and approve in the browser, then `git push`.
 
 ## Look Up Your Own Representative (Medium)
 
