@@ -14,6 +14,7 @@ Project (FEC `C00799031`), to each 2026 federal candidate, from public FEC filin
 - **Each top figure** shows its data-as-of date and links to the FEC committee page behind it; table figures link to their FEC filings, with a count of the filed records behind each.
 - **"Rejects AIPAC" icons** come only from the sourced `STANCES` list in `index.html`; the FEC does not
   record public statements. Add entries with a source link.
+- **Weekly link check:** `check_links.py` (GitHub Action `check-links.yml`, Mondays) opens every FEC link the page shows; if any is broken the run fails and GitHub emails the owner, with the broken links listed in the run log.
 
 This counts lobby money from US committees, not money from the Israeli government: US law bars foreign
 governments and foreign nationals from funding US campaigns.

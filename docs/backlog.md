@@ -208,13 +208,6 @@ Tracker, so it comes after that. Every summary is neutral, links to
 the official measure text, and Hayden reads it before it goes live. Hayden picked this idea on Nov 8,
 2026.
 
-## Broken Source Link Checker (Small)
-
-Once a week, a check opens every link to a public filing on the site and lists any that broke, so
-they can be fixed. A dead source link quietly weakens a politically sensitive site. It runs on
-GitHub alongside the hourly data refresh, and the list stays private to Hayden. Hayden picked this
-idea on Nov 8, 2026.
-
 ## Stale Figures Turn Amber (Small, after the hourly refresh)
 
 If a number's as-of date gets too old, its Data Freshness Badge turns amber and says how many days
@@ -224,11 +217,9 @@ Hayden picked this idea on Nov 8, 2026.
 
 ## Hourly Refresh Switch On Phone (Small)
 
+Note Nov 9: the hourly refresh is already ON (GitHub Action `refresh.yml`), so this is now only an off/on switch. Needs a GitHub token from Hayden (fine-grained, Actions write on this repo) saved on the HQ hub before it can be built.
+
 A single switch on your phone turns the hourly money data refresh on or off, with the last refresh time beside it. The hourly data refresh went live on Nov 9 (workflow "Refresh FEC data", .github/workflows/refresh.yml, active), so this switch would enable/disable that workflow from the phone through a new HQ hub endpoint (hq/hub). Not built: it needs a new hub endpoint and phone screen plus GitHub sign-in on the hub; taken up by the next step. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
-
-## Hourly Refresh Goes Live Notice (Small)
-
-When you say go on the hourly data refresh, your phone tells you the first refresh ran and what changed. The hourly refresh is already live (go was given Nov 9), no run had happened by 01:30Z Nov 10, so this is now "your phone tells you the first refresh ran and what changed"; it would be a new alert in hq/hub/alerts.mjs reading gh run list --workflow=refresh.yml. Not built yet. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
 
 ## Ballot Measure Money View (Large)
 
