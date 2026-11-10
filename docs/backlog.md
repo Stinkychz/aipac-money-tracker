@@ -1,8 +1,6 @@
 # Election Money Tracker: ideas to build
 
-Nothing ready (2026-11-09): the page holds only AIPAC PAC and super PAC totals per candidate, so the remaining Small items need new donor, monthly or FEC-calendar data or wording only Hayden picks, and the one open Large item (ballot measures) is already being built by job c1620da75f0e.
-
-Nothing ready (2026-11-09): the page only holds per-candidate AIPAC totals, so donor, industry, rival-gap and filing-calendar items need new FEC data plus look/wording decisions from Hayden; the switch needs his GitHub token; the Ballot Measure Money View (ballot.py, test_ballot.py) is being built by job c1620da75f0e.
+Nothing ready (2026-11-10): the page only holds per-candidate AIPAC and super PAC totals, so donor, industry, rival-gap and filing-calendar items need new FEC data or look/wording choices from Hayden; the switch needs his GitHub token; the Ballot Measure Money View (ballot.py, test_ballot.py) is held by another backlog job (c1620da75f0e / d8d8aca67ea8 started the same minute), so not duplicated.
 
 ## Outside Money Map (Medium)
 
