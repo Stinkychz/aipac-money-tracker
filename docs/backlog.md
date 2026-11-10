@@ -2,12 +2,6 @@ _Nov 9, 2026 sweep: nothing ready. The four newest Small picks (refresh switch o
 
 # Election Money Tracker: ideas to build
 
-## Hourly Data Refresh (Small, waiting on Hayden)
-
-The hourly FEC refresh is written (.github/workflows/refresh.yml, kept on the PC, not uploaded) but
-off. Once it's uploaded, GitHub updates the live site's numbers every hour by itself; until then
-they change only when rebuilt by hand. Hayden said "wait" on Nov 9, 2026; upload and push it when he says go.
-
 ## Look Up Your Own Representative (Medium)
 
 Type your address and see who funds the people who represent you. It turns the site from a list
