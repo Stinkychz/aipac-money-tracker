@@ -31,6 +31,18 @@ def party(p):
     return "DEM" if p.startswith("DEM") else "REP" if p.startswith("REP") else p[:3] or "?"
 
 
+def count_changed(old, new):
+    """How many candidates are new, gone or have different figures between two candidate lists."""
+    a = {c["id"]: c for c in old or []}
+    b = {c["id"]: c for c in new}
+    return sum(1 for k in a.keys() | b.keys() if a.get(k) != b.get(k))
+
+
+def next_log(old_log, at, changed, keep=10):
+    """The refresh log with this refresh added on top, newest first, at most `keep` entries."""
+    return ([{"at": at, "changed": changed}] + list(old_log or []))[:keep]
+
+
 def main():
     yy = str(CYCLE)[2:]
     cands = defaultdict(lambda: {"pac": 0.0, "support": 0.0, "oppose": 0.0,
@@ -80,10 +92,14 @@ def main():
     out.sort(key=lambda c: c["id"])
     page = PAGE.read_text(encoding="utf-8")
     old = re.search(r"/\*SNAPSHOT\*/(.*?)/\*END\*/", page, flags=re.S)
-    if old and old.group(1) != "null" and json.loads(old.group(1))["candidates"] == out:
+    prev = json.loads(old.group(1)) if old and old.group(1) != "null" else None
+    if prev and prev["candidates"] == out:
         print("No new filings; index.html unchanged.")
         return
-    snap = {"at": int(time.time() * 1000), "source": "snapshot", "candidates": out}
+    at = int(time.time() * 1000)
+    changed = count_changed(prev and prev["candidates"], out)
+    snap = {"at": at, "source": "snapshot", "candidates": out,
+            "log": next_log(prev and prev.get("log"), at, changed)}
     page, n = re.subn(r"/\*SNAPSHOT\*/.*?/\*END\*/", lambda m: "/*SNAPSHOT*/" + json.dumps(snap) + "/*END*/",
                       page, flags=re.S)
     if n != 1:

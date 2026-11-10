@@ -27,6 +27,8 @@
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
     font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .reflog { margin-top: 14px; color: var(--dim); font-size: 13px; }
+  .reflog ul { margin: 6px 0 0; padding-left: 18px; }
   .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 16px 48px; }
   h1 { font-size: 26px; letter-spacing: .04em; text-transform: uppercase; margin: 0 0 4px; }
   .sub { color: var(--dim); margin: 0 0 18px; max-width: 760px; }
@@ -140,6 +142,10 @@
     AIPAC said it was halting endorsements and direct contributions; its super PAC continues. Party committees
     (such as the DCCC) are left out. "Rejects AIPAC" covers only the statements listed in this file, so a
     missing icon does not mean a candidate accepts AIPAC money.</p>
+  <details class="reflog" id="reflog" hidden>
+    <summary>Refresh log</summary>
+    <ul id="reflogList"></ul>
+  </details>
 </div>
 
 <svg width="0" height="0" style="position:absolute">
@@ -465,10 +471,6 @@ async function checkNewSnapshot() {
 }
 setInterval(checkNewSnapshot, 10 * 60 * 1000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) checkNewSnapshot(); });
-
-document.getElementById("refreshList").innerHTML = REFRESH_LOG.length ? REFRESH_LOG.map((e) =>
-  `<li>${new Date(e.at).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}: ${e.changed} candidate${e.changed === 1 ? "" : "s"} changed</li>`).join("")
-  : "<li>No refreshes recorded yet.</li>";
 
 // Start from the cache when it is fresh enough, so reloading doesn't spend the rate limit.
 try { data = JSON.parse(store.get(CACHE_KEY)); } catch { data = null; }

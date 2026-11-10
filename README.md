@@ -9,6 +9,7 @@ Project (FEC `C00799031`), to each 2026 federal candidate, from public FEC filin
 - **Built-in data:** `build.py` bakes the FEC bulk files into `index.html`, so the page still works when
   the API is rate-limited. Run `python build.py` and push to refresh it.
 - **Open pages update themselves:** every 10 minutes (and when you return to the tab) the page checks for a newer built-in snapshot and swaps in the new figures without a reload.
+- **Refresh log** at the page bottom lists the last ten data refreshes (time and how many candidates changed); `build.py` records each one.
 - **Download CSV** saves the rows shown (after filters) with FEC source links and a data-as-of date.
 - **Each top figure** shows its data-as-of date and links to the FEC committee page behind it; table figures link to their FEC filings, with a count of the filed records behind each.
 - **"Rejects AIPAC" icons** come only from the sourced `STANCES` list in `index.html`; the FEC does not

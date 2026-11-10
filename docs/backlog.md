@@ -226,10 +226,6 @@ Hayden picked this idea on Nov 8, 2026.
 
 A single switch on your phone turns the hourly money data refresh on or off, with the last refresh time beside it. The hourly data refresh is built but sitting off until you say go, so you shouldn't have to wait for a PC session to flip it. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
 
-## Refresh Log on the Site (Small)
-
-A small page listing the last ten data refreshes with the time and how many figures changed. The hourly refresh is ready but switched off until you say go, and a visible log shows you it works before you flip it on. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
-
 ## Hourly Refresh Goes Live Notice (Small)
 
 When you say go on the hourly data refresh, your phone tells you the first refresh ran and what changed. The hourly refresh is ready but waiting for your go, and you dislike being left out of the loop. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-09, so it goes ahead of unpicked items. If it defines the look, rules, names or new content, make an options card first.
