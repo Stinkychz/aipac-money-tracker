@@ -183,12 +183,6 @@ to the filings behind it. It answers a visitor's next question after Money by In
 after that and uses the same industry grouping. Each side's percentage is written on the bar, so it
 never relies on color alone. Hayden picked this idea on Nov 8, 2026.
 
-## Ballot Measure Money Tracker (Medium)
-
-Who is paying for and against each ballot measure, with the amounts and a link to each filing.
-Ballot measure money is filed with each state, not the FEC, so which states to start with is a
-swipe card for Hayden at build time. Hayden picked this idea on Nov 8, 2026.
-
 ## Ballot Measures in Plain Words (Small)
 
 Each ballot measure gets a two-sentence summary of what a yes and a no would change, shown next to
@@ -217,7 +211,10 @@ total, the no total, the top donors on each side and the result, from Cal-Access
 link to the filing behind every number. Yes and no are always side by side, same size, no adjectives.
 Hayden picked this idea on Nov 8, 2026 and said on Nov 9, 2026 to merge it into this site. The full
 plan, fairness rules and steps are in [ballot-measures.md](ballot-measures.md). Nothing goes public
-until Hayden has seen it.
+until Hayden has seen it. This also holds the older "Ballot Measure Money Tracker" idea (Medium, picked
+Nov 8, 2026: who is paying for and against each ballot measure, with the amounts and a link to each
+filing). Ballot measure money is filed with each state, not the FEC, so if more states than
+California are added later, which states to start with is a swipe card for Hayden at that time.
 
 Progress Nov 9: step 1 code done and tested in ballot.py (totals, out-of-state, top-3 share, bulk-zip reader). Left: run it on the real Cal-Access download, map the Nov 2026 measures to their committees, check against the state's totals, then the page (step 2).
 
