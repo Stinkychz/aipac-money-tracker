@@ -16,6 +16,41 @@ from collections import defaultdict
 
 csv.field_size_limit(1 << 24)
 
+# The statewide measures on the Nov 3, 2026 California ballot, copied Nov 12, 2026 from
+# https://www.sos.ca.gov/elections/ballot-measures/qualified-ballot-measures
+MEASURES_2026 = {
+    1: "Authorizes Bonds for Housing Affordability Programs",
+    2: "Increases State's Rainy Day Fund",
+    3: "Provides Permanent Funding for Schools and Health Care by Extending Existing Tax on High Incomes",
+    4: "Repeals Prohibition Against Public Funding of Election Campaigns",
+    5: "Changes Recall Election Process for Statewide Officers",
+    37: "Creates Loan Program for Middle-Income Buyers of Qualified New Homes",
+    38: "Authorizes Bonds for Immunology Medical Research",
+    39: "Prohibits Citizens from Voting Unless They Present Government-Issued Identification",
+    40: "Imposes One-Time Tax on Certain Taxpayers",
+    41: "Prohibits New State Taxes That Exclude Revenues from State Spending Limit",
+    42: "Prohibits New State Personal Property Taxes and Certain Retroactive State Taxes",
+    43: "Limits Voters' Ability to Raise Revenues for Local Government Services",
+    44: "Requires Community Health Clinics Spend 90% Of Revenue on Program Services",
+    45: "Modifies Environmental Review for Certain Projects",
+}
+ELECTION_2026 = "2026-11-03"
+
+
+def match_cover(cover):
+    """Which 2026 measure and side a committee cover page is for: (number, "yes"|"no") or None.
+
+    Needs the 2026 election date on the cover, a BAL_NUM that is an official 2026 number and a
+    SUP_OPP_CD of S or O. Anything else (older elections, no number, odd side) is left out to be
+    reviewed by hand rather than guessed."""
+    if not str(cover.get("ELECT_DATE", "")).startswith(ELECTION_2026):
+        return None
+    num = "".join(ch for ch in str(cover.get("BAL_NUM", "")) if ch.isdigit())
+    side = {"S": "yes", "O": "no"}.get(str(cover.get("SUP_OPP_CD", "")).strip().upper())
+    if not num or side is None or int(num) not in MEASURES_2026:
+        return None
+    return int(num), side
+
 
 def read_rows(f, wanted=None):
     """Stream rows of a Cal-Access TSV (text file object) as dicts. Quoted fields may contain tabs,

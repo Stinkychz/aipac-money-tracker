@@ -3,7 +3,7 @@ import os
 import tempfile
 import unittest
 import zipfile
-from ballot import side_totals, top_donors, top_share, read_rows, read_zip_table
+from ballot import MEASURES_2026, match_cover, side_totals, top_donors, top_share, read_rows, read_zip_table
 
 
 def cover(fid, amend, filer): return {"FILING_ID": fid, "AMEND_ID": str(amend), "FILER_ID": filer}
@@ -82,6 +82,24 @@ class Reader(unittest.TestCase):
     def test_top_share_empty_side(self):
         s = side_totals([], [], CMTES)
         self.assertEqual(top_share(s["no"]), 0.0)
+
+
+class MatchCoverTests(unittest.TestCase):
+    def c(self, num="39", side="S", date="2026-11-03"):
+        return {"BAL_NUM": num, "SUP_OPP_CD": side, "ELECT_DATE": date + " 00:00:00"}
+
+    def test_matches_support_and_oppose(self):
+        self.assertEqual(match_cover(self.c("39", "S")), (39, "yes"))
+        self.assertEqual(match_cover(self.c("PROP 45", "o")), (45, "no"))
+
+    def test_leaves_out_old_elections_and_unknowns(self):
+        self.assertIsNone(match_cover(self.c(date="2024-11-05")))
+        self.assertIsNone(match_cover(self.c("")))
+        self.assertIsNone(match_cover(self.c("12")))
+        self.assertIsNone(match_cover(self.c(side="")))
+
+    def test_official_list_has_fourteen(self):
+        self.assertEqual(len(MEASURES_2026), 14)
 
 
 if __name__ == "__main__":
