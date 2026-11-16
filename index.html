@@ -76,6 +76,12 @@
   .note { color: var(--dim); font-size: 12px; margin-top: 18px; max-width: 860px; }
   .keybox { display: none; margin-bottom: 12px; gap: 8px; flex-wrap: wrap; align-items: center; }
   .keybox.open { display: flex; }
+  .terms { margin-top: 14px; font-size: 13px; max-width: 860px; }
+  .terms summary { cursor: pointer; padding: 10px 0; color: var(--text); }
+  .terms dl { margin: 0; }
+  .terms dt { font-weight: 600; margin-top: 10px; }
+  .terms dd { margin: 2px 0 0; color: var(--dim); }
+  .terms dd a { color: inherit; }
   .err-msg { color: var(--target); }
 </style>
 </head>
@@ -155,6 +161,19 @@
     AIPAC said it was halting endorsements and direct contributions; its super PAC continues. Party committees
     (such as the DCCC) are left out. "Rejects AIPAC" covers only the statements listed in this file, so a
     missing icon does not mean a candidate accepts AIPAC money.</p>
+  <details class="terms" id="terms">
+    <summary>Money terms in plain words</summary>
+    <dl>
+      <dt>PAC</dt>
+      <dd>A political action committee: a group that collects donations and gives money directly to candidates' campaigns, within legal limits. <a href="https://www.fec.gov/help-candidates-and-committees/registering-pac/">FEC: PACs</a></dd>
+      <dt>Super PAC</dt>
+      <dd>A committee that may raise and spend unlimited amounts to support or oppose candidates, but may not give to a campaign or coordinate with it. <a href="https://www.fec.gov/data/browse-data/?tab=spending">FEC: spending data</a></dd>
+      <dt>Independent expenditure</dt>
+      <dd>Money spent on ads, mail or other messages that urge a vote for or against a candidate, made without the candidate's campaign. <a href="https://www.fec.gov/help-candidates-and-committees/making-independent-expenditures/">FEC: independent expenditures</a></dd>
+      <dt>Earmarked contribution</dt>
+      <dd>A donation a person asks a PAC to pass on to a named candidate; the PAC only forwards it, and it is counted in the PAC column here. <a href="https://www.fec.gov/help-candidates-and-committees/making-disbursements-pac/">FEC: what PACs may pay</a></dd>
+    </dl>
+  </details>
   <details class="reflog" id="reflog" hidden>
     <summary>Refresh log</summary>
     <ul id="reflogList"></ul>
