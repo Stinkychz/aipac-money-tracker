@@ -37,13 +37,38 @@ MEASURES_2026 = {
 ELECTION_2026 = "2026-11-03"
 
 
+def _date_parts(text):
+    """(year, month, day) from "2026-11-03" or the state's "11/3/2026 " style, else None."""
+    t = str(text).strip().split(" ")[0]
+    try:
+        if "-" in t:
+            y, m, d = t.split("-")[:3]
+        elif "/" in t:
+            m, d, y = t.split("/")[:3]
+        else:
+            return None
+        return int(y), int(m), int(d)
+    except ValueError:
+        return None
+
+
+def _is_2026_ballot(cover):
+    """The cover's election date is Nov 3, 2026. Many real covers leave ELECT_DATE blank; for those
+    the report date must fall in 2026 (the measure numbers were reused in 2024 and 2025)."""
+    elect = _date_parts(cover.get("ELECT_DATE", ""))
+    if elect:
+        return elect == (2026, 11, 3)
+    rpt = _date_parts(cover.get("RPT_DATE", ""))
+    return bool(rpt) and rpt[0] == 2026
+
+
 def match_cover(cover):
     """Which 2026 measure and side a committee cover page is for: (number, "yes"|"no") or None.
 
-    Needs the 2026 election date on the cover, a BAL_NUM that is an official 2026 number and a
+    Needs the 2026 election date on the cover (or, if blank, a 2026 report date), a BAL_NUM that is an official 2026 number and a
     SUP_OPP_CD of S or O. Anything else (older elections, no number, odd side) is left out to be
     reviewed by hand rather than guessed."""
-    if not str(cover.get("ELECT_DATE", "")).startswith(ELECTION_2026):
+    if not _is_2026_ballot(cover):
         return None
     num = "".join(ch for ch in str(cover.get("BAL_NUM", "")) if ch.isdigit())
     side = {"S": "yes", "O": "no"}.get(str(cover.get("SUP_OPP_CD", "")).strip().upper())

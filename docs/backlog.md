@@ -1,7 +1,5 @@
 # Election Money Tracker: ideas to build
 
-Nothing ready (2026-11-12): the page only holds per-candidate AIPAC and super PAC totals, so donor, industry, rival-gap and filing-calendar items need new FEC data or look/wording choices from Hayden (no docs/decisions.md options card exists yet for them); the switch needs his GitHub token; the Ballot Measure Money View (ballot.py, test_ballot.py) is being worked by other backlog jobs (latest ae0746e048b5, running 3 min at 22:07), so not duplicated.
-
 ## Outside Money Map (Medium)
 
 A map that shades each state by how much money from outside the state went into its races; tap a
@@ -221,6 +219,8 @@ Progress Nov 9: step 1 code done and tested in ballot.py (totals, out-of-state, 
 Progress Nov 9 (later): downloaded the real Cal-Access zip (1.6 GB, kept at %TEMP%\calaccess\dbwebexport.zip) and read it. Finding: `BALLOT_MEASURES_CD.TSV` is stale (110 rows, last election 2000), so the state's bulk data has NO measure-to-committee map for 2026. The only link is each committee's cover page (`CVR_CAMPAIGN_DISCLOSURE_CD`: BAL_NAME, BAL_NUM, SUP_OPP_CD S/O, filed with free text), and it is messy: the same measure appears as 'Prop 39', 'PROPOSITION 39', 'Initiative 25-0022' with no number, and numbers 1-4, 39-45, 50 mix Nov 2024, 2025 and 2026 filings. Next: take the official Nov 2026 measure list and numbers from the Secretary of State, match committees by RPT_DATE/ELECT_DATE (2026-11-03) plus BAL_NAME text, list the matches for review, then run side_totals and compare with the state's published totals.
 
 Progress Nov 12: official Nov 2026 list (Props 1-5 and 37-45, 14 measures, from sos.ca.gov) is now in ballot.py as MEASURES_2026, with match_cover(cover) turning a committee cover page (ELECT_DATE, BAL_NUM, SUP_OPP_CD) into (measure, yes/no); tested. Left: re-download the Cal-Access zip (the Nov 9 copy in %TEMP% is gone), run match_cover over CVR_CAMPAIGN_DISCLOSURE_CD, list unmatched 2026 covers for review, run side_totals per measure and compare with the state totals, then the page (step 2).
+
+Progress Nov 15: re-downloaded the zip (kept at %TEMP%\emt-calaccess\dbwebexport.zip) and ran match_cover over the real CVR_CAMPAIGN_DISCLOSURE_CD. Fixed a bug: real ELECT_DATE looks like "11/3/2026 " (not 2026-11-03) and is often blank, so it matched nothing; now both date styles work and a blank date falls back to a 2026 RPT_DATE (tested). Result: all 14 measures now have committees (e.g. Prop 39: 14 yes, 18 no; Prop 44: 1 yes, 11 no). Still unmatched (208 covers): ones with no BAL_NUM, filed only with the measure's title or initiative number (e.g. "INITIATIVE 25-0022", "Requires New State Taxes..."). Left: match those by title text (MEASURES_2026 names) and review, run side_totals per measure (RCPT_CD table), compare with the state's published totals, then the page (step 2).
 
 ## Freeze the Final Numbers (Small)
 

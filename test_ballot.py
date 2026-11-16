@@ -98,6 +98,13 @@ class MatchCoverTests(unittest.TestCase):
         self.assertIsNone(match_cover(self.c("12")))
         self.assertIsNone(match_cover(self.c(side="")))
 
+    def test_real_date_style_and_blank_election_date(self):
+        self.assertEqual(match_cover({"ELECT_DATE": "11/3/2026 ", "BAL_NUM": "39", "SUP_OPP_CD": "S"}), (39, "yes"))
+        self.assertIsNone(match_cover({"ELECT_DATE": "11/5/2024 ", "BAL_NUM": "39", "SUP_OPP_CD": "S"}))
+        self.assertEqual(match_cover({"ELECT_DATE": "", "RPT_DATE": "9/30/2026 ", "BAL_NUM": "4", "SUP_OPP_CD": "O"}), (4, "no"))
+        self.assertIsNone(match_cover({"ELECT_DATE": "", "RPT_DATE": "6/30/2025 ", "BAL_NUM": "4", "SUP_OPP_CD": "O"}))
+        self.assertIsNone(match_cover({"ELECT_DATE": "", "RPT_DATE": "", "BAL_NUM": "4", "SUP_OPP_CD": "O"}))
+
     def test_official_list_has_fourteen(self):
         self.assertEqual(len(MEASURES_2026), 14)
 
