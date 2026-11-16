@@ -1,6 +1,6 @@
 # Election Money Tracker: ideas to build
 
-Nothing ready (2026-11-16): the Ballot Measure Money View is being worked by backlog job a8da5e0a18c4 ; Next Filing Countdown is done; Plain Words for Money Terms first step shipped, the rest needs wording Hayden reads; Freeze the Final Numbers waits for the Feb 1, 2027 filings; the rest need new FEC data (the DEMO_KEY returns 429), his GitHub token, or look/wording choices from him.
+Nothing ready (2026-11-16): the Ballot Measure Money View first steps shipped (b294f07); Next Filing Countdown is done; Plain Words for Money Terms first step shipped, the rest needs wording Hayden reads; Freeze the Final Numbers waits for the Feb 1, 2027 filings; the rest need new FEC data (the DEMO_KEY returns 429), his GitHub token, or look/wording choices from him.
 
 ## Outside Money Map (Medium)
 
