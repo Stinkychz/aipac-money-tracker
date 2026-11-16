@@ -1,6 +1,6 @@
 # Election Money Tracker: ideas to build
 
-Nothing ready (2026-11-16): the Ballot Measure Money View is being worked by backlog job a8da5e0a18c4 (started 09:08; its RCPT_CD note is uncommitted in this file); Next Filing Countdown is built and only waits on the FEC_API_KEY secret; Plain Words for Money Terms first step shipped, the rest needs wording Hayden reads; Freeze the Final Numbers waits for the page and for the Feb 1, 2027 filings; the rest need new FEC data (the shared DEMO_KEY returns 429; Hayden needs to save a free api.data.gov key as repo secret FEC_API_KEY), his GitHub token, or look/wording choices from him.
+Nothing ready (2026-11-16): the Ballot Measure Money View is being worked by backlog job a8da5e0a18c4 ; Next Filing Countdown is done; Plain Words for Money Terms first step shipped, the rest needs wording Hayden reads; Freeze the Final Numbers waits for the Feb 1, 2027 filings; the rest need new FEC data (the DEMO_KEY returns 429), his GitHub token, or look/wording choices from him.
 
 ## Outside Money Map (Medium)
 
@@ -153,7 +153,7 @@ arrives. Visitors trust a data site more when they know when it updates; the dat
 the FEC's own filing calendar, and it shares that data with Missing Filing Flags and the Data
 Freshness Badge. Hayden picked this idea on Nov 8, 2026.
 
-Progress Nov 16: code built and tested (build.py `filing_dates`/`fetch_filing_dates`, a "Next filing due" line in index.html reading the baked `DUE` list, hidden while empty). Left: run `python build.py` once so `DUE` fills from the FEC calendar, look at the page, then mark done. Blocked only by the shared DEMO_KEY returning HTTP 429 for an hour; a free api.data.gov key in env `FEC_API_KEY` would fix it. Nov 16: build.py now reads `FEC_API_KEY` (falls back to DEMO_KEY); retried, still 429. The refresh workflow already passes secret `FEC_API_KEY`; needs Hayden: a free key from api.data.gov/signup saved as that repo secret.
+Done Nov 16: the Refresh FEC data run (c9295f8) filled `DUE` with the real FEC calendar (Nov 20, Dec 20, Jan 31), so the "Next filing due" line now shows on the page; build.py tests pass. Not yet seen in a screenshot (headless Edge produced none here).
 
 ## Plain Words for Money Terms (Small)
 
