@@ -11,6 +11,7 @@ measure_committees: {filer_id: "yes" | "no"} for one measure, as recorded by the
 """
 import csv
 import io
+import re
 import zipfile
 from collections import defaultdict
 
@@ -62,6 +63,24 @@ def _is_2026_ballot(cover):
     return bool(rpt) and rpt[0] == 2026
 
 
+def _alnum(text):
+    return re.sub(r"[^a-z0-9]+", " ", str(text).lower()).strip()
+
+
+def _measure_from_name(name):
+    """Measure number named in a cover's free-text BAL_NAME, or None. Two sure signs only: the
+    official title (its first words) or "Prop(osition) N" with N from 37 up (1 to 5 were also
+    2024 and older numbers, so those need a BAL_NUM)."""
+    text = _alnum(name)
+    for num, title in MEASURES_2026.items():
+        if _alnum(title)[:45] in text:
+            return num
+    m = re.search(r"\bprop(?:osition)?\b[ :]*(\d+)", text)
+    if m and int(m.group(1)) >= 37 and int(m.group(1)) in MEASURES_2026:
+        return int(m.group(1))
+    return None
+
+
 def match_cover(cover):
     """Which 2026 measure and side a committee cover page is for: (number, "yes"|"no") or None.
 
@@ -72,7 +91,12 @@ def match_cover(cover):
         return None
     num = "".join(ch for ch in str(cover.get("BAL_NUM", "")) if ch.isdigit())
     side = {"S": "yes", "O": "no"}.get(str(cover.get("SUP_OPP_CD", "")).strip().upper())
-    if not num or side is None or int(num) not in MEASURES_2026:
+    if side is None:
+        return None
+    if not num:
+        found = _measure_from_name(cover.get("BAL_NAME", ""))
+        return (found, side) if found else None
+    if int(num) not in MEASURES_2026:
         return None
     return int(num), side
 

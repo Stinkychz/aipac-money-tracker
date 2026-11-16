@@ -105,6 +105,17 @@ class MatchCoverTests(unittest.TestCase):
         self.assertIsNone(match_cover({"ELECT_DATE": "", "RPT_DATE": "6/30/2025 ", "BAL_NUM": "4", "SUP_OPP_CD": "O"}))
         self.assertIsNone(match_cover({"ELECT_DATE": "", "RPT_DATE": "", "BAL_NUM": "4", "SUP_OPP_CD": "O"}))
 
+    def test_name_fallback_when_no_number(self):
+        def c(name, side="S", num="", date="11/3/2026 "):
+            return {"ELECT_DATE": date, "BAL_NUM": num, "BAL_NAME": name, "SUP_OPP_CD": side}
+        self.assertEqual(match_cover(c("Proposition 43: Local taxes: limitation. (ACA 22)")), (43, "yes"))
+        self.assertEqual(match_cover(c("PROHIBITS NEW STATE PERSONAL PROPERTY TAXES AND CERTAIN RETROACTIVE STATE TAXES. INITIATIV", "O")), (42, "no"))
+        self.assertIsNone(match_cover(c("Proposition: 1 Behavioral Health")))  # old numbers need a BAL_NUM
+        self.assertIsNone(match_cover(c("Prop 50")))
+        self.assertIsNone(match_cover(c("Proposition 43", side="")))
+        self.assertIsNone(match_cover(c("Proposition 43", date="11/5/2024 ")))
+        self.assertIsNone(match_cover(c("Prop 43", num="50")))  # a wrong BAL_NUM is not overridden
+
     def test_official_list_has_fourteen(self):
         self.assertEqual(len(MEASURES_2026), 14)
 
