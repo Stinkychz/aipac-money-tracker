@@ -151,6 +151,8 @@ arrives. Visitors trust a data site more when they know when it updates; the dat
 the FEC's own filing calendar, and it shares that data with Missing Filing Flags and the Data
 Freshness Badge. Hayden picked this idea on Nov 8, 2026.
 
+Progress Nov 16: code built and tested (build.py `filing_dates`/`fetch_filing_dates`, a "Next filing due" line in index.html reading the baked `DUE` list, hidden while empty). Left: run `python build.py` once so `DUE` fills from the FEC calendar, look at the page, then mark done. Blocked only by the shared DEMO_KEY returning HTTP 429 for an hour; a free api.data.gov key in env `FEC_API_KEY` (not yet read by build.py) would fix it.
+
 ## Plain Words for Money Terms (Small)
 
 Tap a term such as super PAC, bundler or itemized donation anywhere on the site and get a

@@ -6,7 +6,7 @@
 Same numbers as the page's live mode: AIPAC PAC (C00797670) contributions to candidates
 (pas2), and United Democracy Project (C00799031) independent expenditures for / against them.
 """
-import csv, io, json, re, sys, time, urllib.request, zipfile
+import csv, datetime, io, json, re, sys, time, urllib.request, zipfile
 from collections import defaultdict
 from pathlib import Path
 
@@ -41,6 +41,32 @@ def count_changed(old, new):
 def next_log(old_log, at, changed, keep=10):
     """The refresh log with this refresh added on top, newest first, at most `keep` entries."""
     return ([{"at": at, "changed": changed}] + list(old_log or []))[:keep]
+
+
+def filing_dates(rows):
+    """Due dates of the reports a monthly filer owes (monthly and year-end), oldest first, no repeats.
+    `rows` are FEC /reporting-dates/ results."""
+    seen = {}
+    for r in rows:
+        t = r.get("report_type") or ""
+        if (re.fullmatch(r"M\d{1,2}", t) or t == "YE") and r.get("report_type_full"):
+            seen[r["due_date"]] = r["report_type_full"].title()
+    return [{"due": d, "name": seen[d]} for d in sorted(seen)]
+
+
+def fetch_filing_dates(today):
+    """Upcoming monthly-filer due dates from the FEC calendar (public endpoint, DEMO_KEY)."""
+    rows, page = [], 1
+    while True:
+        url = ("https://api.open.fec.gov/v1/reporting-dates/?api_key=DEMO_KEY&per_page=100&sort=due_date"
+               f"&report_year={today.year}&report_year={today.year + 1}&page={page}")
+        with urllib.request.urlopen(url, timeout=60) as r:
+            data = json.load(r)
+        rows += data["results"]
+        if page >= data["pagination"]["pages"]:
+            break
+        page += 1
+    return [d for d in filing_dates(rows) if d["due"] >= today.isoformat()]
 
 
 def main():
@@ -91,10 +117,17 @@ def main():
 
     out.sort(key=lambda c: c["id"])
     page = PAGE.read_text(encoding="utf-8")
+    try:  # the next-filing note; if the FEC calendar is down, keep the dates already in the page
+        due = fetch_filing_dates(datetime.date.today())
+        page = re.sub(r"/\*DUE\*/.*?/\*END\*/", lambda m: "/*DUE*/" + json.dumps(due) + "/*END*/", page, flags=re.S)
+    except Exception as e:
+        print("FEC filing calendar not read:", e)
     old = re.search(r"/\*SNAPSHOT\*/(.*?)/\*END\*/", page, flags=re.S)
     prev = json.loads(old.group(1)) if old and old.group(1) != "null" else None
     if prev and prev["candidates"] == out:
-        print("No new filings; index.html unchanged.")
+        if page != PAGE.read_text(encoding="utf-8"):
+            PAGE.write_text(page, encoding="utf-8")
+        print("No new filings.")
         return
     at = int(time.time() * 1000)
     changed = count_changed(prev and prev["candidates"], out)
