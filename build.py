@@ -6,7 +6,7 @@
 Same numbers as the page's live mode: AIPAC PAC (C00797670) contributions to candidates
 (pas2), and United Democracy Project (C00799031) independent expenditures for / against them.
 """
-import csv, datetime, io, json, re, sys, time, urllib.request, zipfile
+import csv, datetime, io, json, os, re, sys, time, urllib.request, zipfile
 from collections import defaultdict
 from pathlib import Path
 
@@ -55,10 +55,11 @@ def filing_dates(rows):
 
 
 def fetch_filing_dates(today):
-    """Upcoming monthly-filer due dates from the FEC calendar (public endpoint, DEMO_KEY)."""
+    """Upcoming monthly-filer due dates from the FEC calendar (public endpoint; key from env FEC_API_KEY, else the shared DEMO_KEY)."""
+    key = os.environ.get("FEC_API_KEY") or "DEMO_KEY"
     rows, page = [], 1
     while True:
-        url = ("https://api.open.fec.gov/v1/reporting-dates/?api_key=DEMO_KEY&per_page=100&sort=due_date"
+        url = (f"https://api.open.fec.gov/v1/reporting-dates/?api_key={key}&per_page=100&sort=due_date"
                f"&report_year={today.year}&report_year={today.year + 1}&page={page}")
         with urllib.request.urlopen(url, timeout=60) as r:
             data = json.load(r)
