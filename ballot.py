@@ -10,6 +10,7 @@ receipts: RCPT_CD rows (FILING_ID, AMEND_ID, FORM_TYPE, REC_TYPE, ENTITY_CD, CTR
 measure_committees: {filer_id: "yes" | "no"} for one measure, as recorded by the state.
 """
 import csv
+import datetime
 import io
 import re
 import zipfile
@@ -39,26 +40,56 @@ ELECTION_2026 = "2026-11-03"
 
 
 def _date_parts(text):
-    """(year, month, day) from "2026-11-03" or the state's "11/3/2026 " style, else None."""
+    """(year, month, day) from "2026-11-03" or the state's "11/3/2026 " style, else None.
+
+    Strict: only those two styles, a four-digit year and a real calendar day. Anything else
+    ("2026/11/03", "13/45/2026", "Nov 3 2024") is None, never a guess."""
     t = str(text).strip().split(" ")[0]
-    try:
-        if "-" in t:
-            y, m, d = t.split("-")[:3]
-        elif "/" in t:
-            m, d, y = t.split("/")[:3]
-        else:
+    m = re.fullmatch(r"(\d{4})-(\d{1,2})-(\d{1,2})", t)
+    if m:
+        y, mo, d = m.groups()
+    else:
+        m = re.fullmatch(r"(\d{1,2})/(\d{1,2})/(\d{4})", t)
+        if not m:
             return None
-        return int(y), int(m), int(d)
+        mo, d, y = m.groups()
+    try:
+        datetime.date(int(y), int(mo), int(d))
     except ValueError:
         return None
+    return int(y), int(mo), int(d)
+
+
+def unreadable_dates(covers):
+    """Every non-blank ELECT_DATE / RPT_DATE on a cover that _date_parts cannot read, as sorted
+    (field, text) pairs. The ballot build must stop on a non-empty list rather than drop or guess."""
+    bad = set()
+    for cover in covers:
+        for field in ("ELECT_DATE", "RPT_DATE"):
+            text = str(cover.get(field, "")).strip()
+            if text and _date_parts(text) is None:
+                bad.add((field, text))
+    return sorted(bad)
+
+
+def check_dates(covers):
+    """Raise ValueError naming the unreadable dates, so a new date style is looked at before publishing."""
+    bad = unreadable_dates(covers)
+    if bad:
+        shown = ", ".join(f"{f}={t!r}" for f, t in bad[:10])
+        raise ValueError(f"{len(bad)} unreadable cover date(s), review before publishing: {shown}")
 
 
 def _is_2026_ballot(cover):
     """The cover's election date is Nov 3, 2026. Many real covers leave ELECT_DATE blank; for those
-    the report date must fall in 2026 (the measure numbers were reused in 2024 and 2025)."""
-    elect = _date_parts(cover.get("ELECT_DATE", ""))
+    the report date must fall in 2026 (the measure numbers were reused in 2024 and 2025). A
+    non-blank election date that cannot be read is never replaced by the report date."""
+    raw = str(cover.get("ELECT_DATE", "")).strip()
+    elect = _date_parts(raw)
     if elect:
         return elect == (2026, 11, 3)
+    if raw:
+        return False
     rpt = _date_parts(cover.get("RPT_DATE", ""))
     return bool(rpt) and rpt[0] == 2026
 

@@ -116,6 +116,25 @@ class MatchCoverTests(unittest.TestCase):
         self.assertIsNone(match_cover(c("Proposition 43", date="11/5/2024 ")))
         self.assertIsNone(match_cover(c("Prop 43", num="50")))  # a wrong BAL_NUM is not overridden
 
+    def test_strict_date_reader(self):
+        from ballot import _date_parts
+        self.assertEqual(_date_parts("2026-11-03 00:00:00"), (2026, 11, 3))
+        self.assertEqual(_date_parts("11/3/2026 "), (2026, 11, 3))
+        for bad in ("2026/11/03", "13/45/2026", "Nov 3 2024", "11/3/26", "2026-02-30", ""):
+            self.assertIsNone(_date_parts(bad), bad)
+
+    def test_unreadable_election_date_is_not_rescued_by_report_date(self):
+        c = {"ELECT_DATE": "Nov 3 2024", "RPT_DATE": "9/30/2026 ", "BAL_NUM": "4", "SUP_OPP_CD": "O"}
+        self.assertIsNone(match_cover(c))
+
+    def test_alarm_lists_unreadable_dates_and_ignores_blank(self):
+        from ballot import unreadable_dates, check_dates
+        covers = [{"ELECT_DATE": "", "RPT_DATE": "9/30/2026 "}, {"ELECT_DATE": "Nov 3 2024", "RPT_DATE": "13/45/2026"}]
+        self.assertEqual(unreadable_dates(covers), [("ELECT_DATE", "Nov 3 2024"), ("RPT_DATE", "13/45/2026")])
+        with self.assertRaises(ValueError):
+            check_dates(covers)
+        check_dates(covers[:1])
+
     def test_official_list_has_fourteen(self):
         self.assertEqual(len(MEASURES_2026), 14)
 
