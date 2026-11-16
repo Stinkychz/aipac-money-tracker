@@ -153,7 +153,7 @@ arrives. Visitors trust a data site more when they know when it updates; the dat
 the FEC's own filing calendar, and it shares that data with Missing Filing Flags and the Data
 Freshness Badge. Hayden picked this idea on Nov 8, 2026.
 
-Done Nov 16: the Refresh FEC data run (c9295f8) filled `DUE` with the real FEC calendar (Nov 20, Dec 20, Jan 31), so the "Next filing due" line now shows on the page; build.py tests pass. Not yet seen in a screenshot (headless Edge produced none here).
+Done Nov 16: the Refresh FEC data run (c9295f8) filled `DUE` with the real FEC calendar (Nov 20, Dec 20, Jan 31), so the "Next filing due" line now shows on the page; build.py tests pass. No screenshot: Hayden said skip (Nov 16), so it is marked done on the passing tests and filled dates alone.
 
 ## Plain Words for Money Terms (Small)
 
