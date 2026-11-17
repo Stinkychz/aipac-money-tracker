@@ -98,6 +98,12 @@ def _alnum(text):
     return re.sub(r"[^a-z0-9]+", " ", str(text).lower()).strip()
 
 
+# Initiative file numbers (Attorney General's list) matched to Nov 2026 measures by title, not stated
+# by any official page. Prop 39 (25-0007A1) is left out: its match is by subject only.
+INITIATIVE_NUMBERS = {"25-0016": 3, "25-0013": 37, "25-0026": 38, "25-0024": 40, "25-0040": 41,
+                      "25-0041": 42, "25-0008": 44, "25-0023": 45}
+
+
 def _measure_from_name(name):
     """Measure number named in a cover's free-text BAL_NAME, or None. Two sure signs only: the
     official title (its first words) or "Prop(osition) N" with N from 37 up (1 to 5 were also
@@ -106,6 +112,9 @@ def _measure_from_name(name):
     for num, title in MEASURES_2026.items():
         if _alnum(title)[:45] in text:
             return num
+    for init in re.findall(r"\b25 (\d{4})", text):
+        if "25-" + init in INITIATIVE_NUMBERS:
+            return INITIATIVE_NUMBERS["25-" + init]
     m = re.search(r"\bprop(?:osition)?\b[ :]*(\d+)", text)
     if m and int(m.group(1)) >= 37 and int(m.group(1)) in MEASURES_2026:
         return int(m.group(1))

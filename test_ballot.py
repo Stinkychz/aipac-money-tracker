@@ -88,6 +88,12 @@ class MatchCoverTests(unittest.TestCase):
     def c(self, num="39", side="S", date="2026-11-03"):
         return {"BAL_NUM": num, "SUP_OPP_CD": side, "ELECT_DATE": date + " 00:00:00"}
 
+    def test_initiative_number_in_name(self):
+        c = {"BAL_NUM": "", "BAL_NAME": "INITIATIVE 25-0024A1", "SUP_OPP_CD": "O", "ELECT_DATE": "11/3/2026 "}
+        self.assertEqual(match_cover(c), (40, "no"))
+        c["BAL_NAME"] = "Initiative 25-0022"
+        self.assertIsNone(match_cover(c))
+
     def test_matches_support_and_oppose(self):
         self.assertEqual(match_cover(self.c("39", "S")), (39, "yes"))
         self.assertEqual(match_cover(self.c("PROP 45", "o")), (45, "no"))
