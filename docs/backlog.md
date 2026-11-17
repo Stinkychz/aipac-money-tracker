@@ -252,3 +252,5 @@ When a state's filings use a date style the tracker has never seen, it flags the
 Done Nov 16 (first step): `ballot._date_parts` is now strict (only `YYYY-MM-DD` and `M/D/YYYY`, four-digit year, real calendar day), an unreadable non-blank ELECT_DATE is no longer rescued by the report date, and `unreadable_dates(covers)` / `check_dates(covers)` list or raise on any date it cannot read; tested (20 ballot tests pass). Left: call `check_dates` on the real covers in the ballot build (page step 2) and run it once on the real zip to see which styles exist.
 
 Done Nov 17: ran `unreadable_dates` on the real zip's 727,105 covers (6 seconds): exactly one unreadable date, RPT_DATE `'000'` (a junk placeholder, not a date style); every other ELECT_DATE and RPT_DATE is `YYYY-MM-DD` or `M/D/YYYY`. Left: call `check_dates` in the ballot build (page step 2), treating `'000'` as blank (not a date, so no decision needed).
+
+Done Nov 17 (later): `'000'` is now a known placeholder (`ballot.PLACEHOLDER_DATES`), skipped by the alarm; tested (21 ballot tests pass). Left for this item: call `check_dates` in the ballot build (page step 2).

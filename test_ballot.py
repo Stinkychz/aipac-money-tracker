@@ -140,6 +140,7 @@ class MatchCoverTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             check_dates(covers)
         check_dates(covers[:1])
+        check_dates([{"ELECT_DATE": "", "RPT_DATE": "000"}])  # junk placeholder seen on the real zip
 
     def test_official_list_has_fourteen(self):
         self.assertEqual(len(MEASURES_2026), 14)

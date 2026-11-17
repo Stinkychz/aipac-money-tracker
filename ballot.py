@@ -60,6 +60,10 @@ def _date_parts(text):
     return int(y), int(mo), int(d)
 
 
+# Seen once on the real Cal-Access zip (Nov 17): RPT_DATE '000', a junk placeholder, not a date style.
+PLACEHOLDER_DATES = frozenset({"000"})
+
+
 def unreadable_dates(covers):
     """Every non-blank ELECT_DATE / RPT_DATE on a cover that _date_parts cannot read, as sorted
     (field, text) pairs. The ballot build must stop on a non-empty list rather than drop or guess."""
@@ -67,7 +71,7 @@ def unreadable_dates(covers):
     for cover in covers:
         for field in ("ELECT_DATE", "RPT_DATE"):
             text = str(cover.get(field, "")).strip()
-            if text and _date_parts(text) is None:
+            if text and text not in PLACEHOLDER_DATES and _date_parts(text) is None:
                 bad.add((field, text))
     return sorted(bad)
 
