@@ -1,5 +1,6 @@
 import io
 import os
+import shutil
 import tempfile
 import unittest
 import zipfile
@@ -141,6 +142,26 @@ class MatchCoverTests(unittest.TestCase):
             check_dates(covers)
         check_dates(covers[:1])
         check_dates([{"ELECT_DATE": "", "RPT_DATE": "000"}])  # junk placeholder seen on the real zip
+
+    def test_measure_totals_reads_zip_and_stops_on_bad_date(self):
+        import ballot
+        cov = "FILING_ID\tAMEND_ID\tFILER_ID\tELECT_DATE\tBAL_NUM\tBAL_NAME\tSUP_OPP_CD\tRPT_DATE\n"
+        rec = "FILING_ID\tAMEND_ID\tREC_TYPE\tFORM_TYPE\tCTRIB_NAML\tAMOUNT\tCMTE_ID\tCTRIB_ST\n"
+
+        def make(cover_rows):
+            folder = tempfile.mkdtemp(prefix="emt-test-%d-" % os.getpid())
+            self.addCleanup(shutil.rmtree, folder, True)
+            path = os.path.join(folder, "x.zip")
+            with zipfile.ZipFile(path, "w") as z:
+                z.writestr("CalAccess/DATA/CVR_CAMPAIGN_DISCLOSURE_CD.TSV", cov + cover_rows)
+                z.writestr("CalAccess/DATA/RCPT_CD.TSV", rec + "1\t0\tRCPT\tA\tAcme\t500\t\tNY\n"
+                           "1\t0\tRCPT\tA\tZed\t250\t\tCA\n9\t0\tRCPT\tA\tOther\t99\t\tCA\n")
+            return path
+        out = ballot.measure_totals(make("1\t0\tF1\t11/3/2026 \t40\t\tS\t\n"))
+        self.assertEqual(out[40]["yes"]["total"], 750.0)
+        self.assertEqual(out[40]["yes"]["outOfState"], 500.0)
+        with self.assertRaises(ValueError):
+            ballot.measure_totals(make("1\t0\tF1\tNov 3 2026\t40\t\tS\t\n"))
 
     def test_official_list_has_fourteen(self):
         self.assertEqual(len(MEASURES_2026), 14)

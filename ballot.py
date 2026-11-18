@@ -215,3 +215,25 @@ def top_share(side, n=3):
     if not side["total"]:
         return 0.0
     return sum(a for _, a in top_donors(side, n)) / side["total"]
+
+
+COVER_COLUMNS = {"FILING_ID", "AMEND_ID", "FILER_ID", "ELECT_DATE", "BAL_NUM", "BAL_NAME", "SUP_OPP_CD", "RPT_DATE"}
+RECEIPT_COLUMNS = {"FILING_ID", "AMEND_ID", "REC_TYPE", "FORM_TYPE", "CTRIB_NAML", "AMOUNT", "CMTE_ID", "CTRIB_ST"}
+
+
+def measure_totals(zip_path):
+    """Yes/no totals for every 2026 measure straight from the bulk zip: {measure: side_totals(...)}.
+    Stops (ValueError) on an unreadable cover date. Reads the covers once, then streams the 3.9 GB
+    receipts table keeping only rows of matched filings, so memory stays small."""
+    covers = list(read_zip_table(zip_path, "CalAccess/DATA/CVR_CAMPAIGN_DISCLOSURE_CD.TSV", COVER_COLUMNS))
+    check_dates(covers)
+    per, filings = defaultdict(dict), set()
+    for c in covers:
+        m = match_cover(c)
+        if m:
+            per[m[0]][c["FILER_ID"]] = m[1]
+            filings.add(c["FILING_ID"])
+    matched = [c for c in covers if c["FILING_ID"] in filings]
+    receipts = [r for r in read_zip_table(zip_path, "CalAccess/DATA/RCPT_CD.TSV", RECEIPT_COLUMNS)
+                if r["FILING_ID"] in filings]
+    return {m: side_totals(matched, receipts, per[m]) for m in sorted(per)}
