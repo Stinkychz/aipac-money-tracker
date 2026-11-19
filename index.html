@@ -83,6 +83,14 @@
   .terms dd { margin: 2px 0 0; color: var(--dim); }
   .terms dd a { color: inherit; }
   .err-msg { color: var(--target); }
+  .gaps { margin: 0 0 12px; max-width: 860px; }
+  .gaps p { margin: 0 0 10px; }
+  .gaps a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .gaps .hint { color: var(--dim); font-size: 13px; }
+  .gaprow { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+  .gaprow small { color: var(--dim); font-size: 12px; white-space: nowrap; }
+  .gapbar { display: flex; flex: 0 1 400px; min-width: 0; height: 8px; background: var(--dim); }
+  .gapbar i { display: block; height: 100%; background: var(--line); }
 </style>
 </head>
 <body>
@@ -137,6 +145,8 @@
     <span><svg class="icon" viewBox="0 0 20 20"><use href="#i-targeted"/></svg> Targeted (super PAC spent against them)</span>
     <span><svg class="icon" viewBox="0 0 20 20"><use href="#i-rejects"/></svg> Publicly rejects AIPAC money (sourced statement)</span>
   </div>
+
+  <div class="gaps" id="gaps"></div>
 
   <div class="tablewrap">
     <table>
@@ -322,7 +332,8 @@ const short = (n) => n >= 1e6 ? "$" + (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? "$
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
 const titleCase = (n) => {
   const [last, first = ""] = (n || "").split(",");
-  const tc = (s) => s.trim().toLowerCase().replace(/\b\w/g, (ch) => ch.toUpperCase());
+  const tc = (s) => s.trim().toLowerCase().replace(/\b\w/g, (ch) => ch.toUpperCase())
+    .replace(/\b(Ii|Iii|Iv)\b/g, (r) => r.toUpperCase());  // "Nicholas III", not "Iii"
   return (tc(first) + " " + tc(last)).trim();
 };
 const icon = (id, label, href) => {
@@ -434,6 +445,8 @@ function render() {
     (!party || (party === "other" ? !["DEM", "REP"].includes(c.party) : c.party === party)) &&
     (!stance || (stance === "rejects" ? c.rejects : c[stance])));
 
+  renderGaps(rows);
+
   rows.sort((a, b) => {
     const x = a[sort.k], y = b[sort.k];
     return (typeof x === "number" ? x - y : String(x).localeCompare(String(y))) * sort.dir;
@@ -479,6 +492,43 @@ function render() {
     setTimeout(more, 0);
   };
   setTimeout(more, 0);
+}
+
+// ---- Biggest gap between rivals: for the races in view, how far apart the top two fundraisers are
+// (total money raised from all donors, FEC all-candidates summary, baked in by build.py). Live data
+// has no race totals, so the snapshot's are kept.
+const MAX_GAP_RACES = 5;
+const raceKey = (c) => c.office === "P" ? "P" : c.office === "S" ? `S-${c.state}` : `H-${c.state}-${c.district}`;
+function renderGaps(rows) {
+  const races = data.races || (SNAPSHOT && SNAPSHOT.races) || {};
+  const el = document.getElementById("gaps");
+  if (!Object.keys(races).length) { el.innerHTML = ""; return; }
+  const inView = new Map();
+  for (const c of rows) if (!inView.has(raceKey(c))) inView.set(raceKey(c), c.race);
+  if (!inView.size || inView.size > MAX_GAP_RACES) {
+    el.innerHTML = `<p class="hint">Find your races or search a candidate to see how far apart the top two fundraisers are in each race.</p>`;
+    return;
+  }
+  const who = (r) => `${esc(titleCase(r.name))} (${esc((r.party || "?").slice(0, 3))})`;
+  // Each total links to the candidate's FEC page, where the filings behind it are listed.
+  const raised = (r) => `<a href="https://www.fec.gov/data/candidate/${esc(r.id)}/?cycle=${CYCLE}" title="Filings behind this total on the FEC site">${short(r.raised)}</a>`;
+  const parts = (s) => /^(\d\d)\/(\d\d)\/(\d{4})$/.exec(s || "");  // the FEC writes MM/DD/YYYY
+  const md = (m) => new Date(+m[3], m[1] - 1, +m[2]).toLocaleDateString([], { month: "short", day: "numeric" });
+  const through = (a, b) => {
+    const ds = [...new Set([a.through, b && b.through].filter((s) => parts(s)))].sort((x, y) => parts(x)[3] - parts(y)[3] || x.localeCompare(y)).map(parts);
+    if (!ds.length) return "";
+    const sameYear = ds.every((m) => m[3] === ds[0][3]);
+    return ` Reports through ${ds.map((m, i) => md(m) + (sameYear && i < ds.length - 1 ? "" : ", " + m[3])).join(" and ")}.`;
+  };
+  el.innerHTML = [...inView].map(([key, label]) => {
+    const [a, b] = races[key] || [];
+    if (!a) return `<p><b>${esc(label)}:</b> no candidate in this race has reported raising money yet.</p>`;
+    if (!b) return `<p><b>${esc(label)}:</b> ${who(a)} has raised ${raised(a)}, the only candidate in this race to report raising money.${through(a)}</p>`;
+    const pct = Math.max(0, Math.min(100, b.raised / a.raised * 100));
+    const gap = short(a.raised - b.raised);
+    return `<p><b>${esc(label)}:</b> ${who(a)} has raised ${raised(a)}, ${who(b)} ${raised(b)}: a gap of <b>${gap}</b>.${through(a, b)}` +
+      `<span class="gaprow" aria-hidden="true"><span class="gapbar"><i style="width:${pct.toFixed(1)}%"></i></span><small>gap ${gap}</small></span></p>`;
+  }).join("") + `<p class="hint">Totals are all money each candidate raised from every donor, not only AIPAC money, so a top fundraiser may not be in the table below.</p>`;
 }
 
 // ---- CSV of the rows currently shown; each row names the FEC pages its numbers come from.
