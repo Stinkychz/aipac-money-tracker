@@ -1,5 +1,5 @@
 import unittest
-from build import count_changed, next_log, filing_dates, race_key, top_raisers
+from build import count_changed, next_log, filing_dates, race_key, top_raisers, small_big
 
 
 class RefreshLog(unittest.TestCase):
@@ -65,6 +65,19 @@ class TopRaisers(unittest.TestCase):
         self.assertEqual([c["id"] for c in got["H-CA-14"]], ["H2", "H3"])
         self.assertNotIn("H-CA-15", got)
         self.assertNotIn("H-NY-01", got)
+
+
+class SmallBig(unittest.TestCase):
+    def test_real_row_split_at_200(self):
+        # Peltola's itemized total from the FEC totals API (Nov 19, 2026), same coverage end as the weball row.
+        got = small_big([TopRaisers.REAL], {"S6AK00276": (20327338.39, "2026-10-14")})
+        self.assertEqual(got, {"S6AK00276": {"small": 12429428.02, "big": 20327338.39, "through": "10/14/2026"}})
+
+    def test_left_out_when_sources_disagree(self):
+        row = TopRaisers.REAL
+        self.assertEqual(small_big([row], {"S6AK00276": (1.0, "2026-09-30")}), {})        # other period
+        self.assertEqual(small_big([row], {"S6AK00276": (9e9, "2026-10-14")}), {})        # more than total
+        self.assertEqual(small_big([row, "short|row"], {"H1": (1.0, "2026-10-14")}), {})  # not tracked
 
 
 if __name__ == "__main__":
