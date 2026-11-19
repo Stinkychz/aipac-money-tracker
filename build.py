@@ -5,6 +5,7 @@
 
 Same numbers as the page's live mode: AIPAC PAC (C00797670) contributions to candidates
 (pas2), and United Democracy Project (C00799031) independent expenditures for / against them.
+Also each tracked race's top two fundraisers by total money raised (weball, the all-candidates summary).
 """
 import csv, datetime, io, json, os, re, sys, time, urllib.request, zipfile
 from collections import defaultdict
@@ -52,6 +53,28 @@ def filing_dates(rows):
         if (re.fullmatch(r"M\d{1,2}", t) or t == "YE") and r.get("report_type_full"):
             seen[r["due_date"]] = r["report_type_full"].title()
     return [{"due": d, "name": seen[d]} for d in sorted(seen)]
+
+
+def race_key(office, state, district):
+    """One race: a House seat (H-CA-14), a state's Senate seat (S-AK) or the presidency (P)."""
+    return "P" if office == "P" else f"S-{state}" if office == "S" else f"H-{state}-{district}"
+
+
+def top_raisers(lines, races, n=2):
+    """The `n` candidates who raised the most in each of `races`, from the FEC's all-candidates summary
+    (weball, one `|` row per candidate: id, name, ..., party 4, total receipts 5, state 18, district 19,
+    coverage end 27). Candidates who raised nothing are left out."""
+    by_race = defaultdict(list)
+    for line in lines:
+        f = line.split("|")
+        if len(f) < 28 or not f[0]:
+            continue
+        key = race_key(f[0][0], f[18], f[19])
+        raised = float(f[5] or 0)
+        if key in races and raised > 0:
+            by_race[key].append({"id": f[0], "name": f[1], "party": party(f[4]), "raised": round(raised, 2),
+                                 "through": f[27]})
+    return {k: sorted(v, key=lambda c: (-c["raised"], c["id"]))[:n] for k, v in sorted(by_race.items())}
 
 
 def fetch_filing_dates(today):
@@ -118,21 +141,27 @@ def main():
 
     out.sort(key=lambda c: c["id"])
     page = PAGE.read_text(encoding="utf-8")
+    old = re.search(r"/\*SNAPSHOT\*/(.*?)/\*END\*/", page, flags=re.S)
+    prev = json.loads(old.group(1)) if old and old.group(1) != "null" else None
+    try:  # each tracked race's top two fundraisers; if the file is down, keep the ones already in the page
+        races = top_raisers(unzip_lines(f"{CYCLE}/weball{yy}.zip"),
+                            {race_key(c["office"], c["state"], c["district"]) for c in out})
+    except Exception as e:
+        print("FEC candidate totals not read:", e)
+        races = (prev or {}).get("races", {})
     try:  # the next-filing note; if the FEC calendar is down, keep the dates already in the page
         due = fetch_filing_dates(datetime.date.today())
         page = re.sub(r"/\*DUE\*/.*?/\*END\*/", lambda m: "/*DUE*/" + json.dumps(due) + "/*END*/", page, flags=re.S)
     except Exception as e:
         print("FEC filing calendar not read:", e)
-    old = re.search(r"/\*SNAPSHOT\*/(.*?)/\*END\*/", page, flags=re.S)
-    prev = json.loads(old.group(1)) if old and old.group(1) != "null" else None
-    if prev and prev["candidates"] == out:
+    if prev and prev["candidates"] == out and prev.get("races") == races:
         if page != PAGE.read_text(encoding="utf-8"):
             PAGE.write_text(page, encoding="utf-8")
         print("No new filings.")
         return
     at = int(time.time() * 1000)
     changed = count_changed(prev and prev["candidates"], out)
-    snap = {"at": at, "source": "snapshot", "candidates": out,
+    snap = {"at": at, "source": "snapshot", "candidates": out, "races": races,
             "log": next_log(prev and prev.get("log"), at, changed)}
     page, n = re.subn(r"/\*SNAPSHOT\*/.*?/\*END\*/", lambda m: "/*SNAPSHOT*/" + json.dumps(snap) + "/*END*/",
                       page, flags=re.S)

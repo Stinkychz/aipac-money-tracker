@@ -180,6 +180,8 @@ bar showing the gap. It gives a visitor the key fact about a race in a few secon
 link to their filings. It needs each candidate's total money raised from the FEC, not just the
 AIPAC money the site tracks today. Hayden picked this idea on Nov 8, 2026.
 
+Done Nov 19 (data step): `build.py` now reads the FEC's all-candidates summary (`weball26.zip`, a bulk file, no API key) and bakes `races` into the snapshot: each tracked race (`H-CA-14`, `S-AK`, `P`) with its top two candidates by total money raised, party and coverage-end date; if the file is down it keeps the races already in the page. Tested (6 build tests pass; an offline dry run of the whole build on the real file fills 326 of 333 tracked races, 322 with two rivals; the 7 missing are candidates with no district on record). Nothing on the page shows it yet. Left: the one line per race with its small gap bar and links to both FEC candidate pages (screenshot and the `hayden` review first). The live mode in `index.html` builds its data without `races`, so the line must keep the snapshot's races when live data replaces the snapshot.
+
 ## Which Way Each Industry Leans (Medium)
 
 For each industry, a two-color bar showing how its donations split between the parties, with a link
