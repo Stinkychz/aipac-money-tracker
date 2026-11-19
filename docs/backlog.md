@@ -1,7 +1,5 @@
 # Election Money Tracker: ideas to build
 
-Nothing ready (2026-11-17): the Ballot Measure Money View first steps shipped (b294f07); Next Filing Countdown is done; Plain Words for Money Terms first step shipped, the rest needs wording Hayden reads; Freeze the Final Numbers waits for the Feb 1, 2027 filings; the rest need new FEC data (the DEMO_KEY returns 429), his GitHub token, or look/wording choices from him.
-
 ## Outside Money Map (Medium)
 
 A map that shades each state by how much money from outside the state went into its races; tap a
@@ -236,14 +234,11 @@ Progress Nov 16 (name match): match_cover now falls back to the cover's free-tex
 
 Progress Nov 17 (initiative numbers): matched 8 initiative file numbers to measures by title against the Attorney General's active-measures list (25-0016 Prop 3, 25-0013 Prop 37, 25-0026 Prop 38, 25-0024 Prop 40, 25-0040 Prop 41, 25-0041 Prop 42, 25-0008 Prop 44, 25-0023 Prop 45) and put them in `ballot.INITIATIVE_NUMBERS`; `match_cover` uses them when BAL_NUM is blank; tested (21 pass). Inferred: no official page states the link, it is by title. Prop 39 (25-0007A1) is by subject only so it is left out; Props 1, 2, 4, 5, 43 are legislative (no number); 25-0022 is not on this ballot. Left: re-run `%TEMP%\emt-side-totals.py` on the real zip, compare with the state's totals, then the page (step 2).
 
+Progress Nov 19 (match check): listed every committee matched to Props 1 to 5 and 43 on the real zip. Props 4 and 43 are real 2026 committees (Prop 4 is SB 42 by Umberg, so "Umberg" was right; Prop 43 yes is the Howard Jarvis committee), not older-year ones. Fixed a counting bug: a committee's filing was credited to every measure that committee ever filed about; now each filing counts only for the measure on its own cover (tested, 22 ballot tests pass). Re-run on the real zip (`%TEMP%\emt-measure-totals.json`, 103 s): the only change is about $0.05M from "Citizens for a Just California - No on 39" no longer also counted under Prop 3 yes and Prop 45 no. Found one false match with no money in it: a 2024 school-bond Prop 2 committee (filer 1473035, blank election date, Jan 2026 report) matches 2026 Prop 2; harmless today, needs a rule if it ever has receipts. Props 2 and 5 have only F496 spending reports (no primarily-formed committee), so $0 raised is expected there. Left: compare with the state's own totals (Cal-Access measure pages), then the page (step 2, Hayden sees it first).
+
 ## Freeze the Final Numbers (Small)
 
 After election day, each measure's money total is saved as a dated final snapshot that stops changing, so the page shows what was settled. The tracker just got its official Nov 2026 measure list, and late filings will keep moving those totals after the vote is over. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-12, so it goes ahead of unpicked items. Category: Want. Fable research (2026-11-12): good idea, with one change to when it freezes. Freezing on election day would lock in totals that miss the last weeks of spending: the FPPC 2026 schedule has committees report Oct 18 to Dec 31 in a statement due Feb 1, 2027, so mark totals "still being reported" after the vote, save the dated final snapshot in early Feb 2027 with its date shown and the copy kept in the repo, and build it after the Ballot Measure Money View page. If it defines the look, rules, names or new content, make an options card first.
-
-
-Progress Nov 16 (name match): match_cover now falls back to the cover's free-text BAL_NAME when BAL_NUM is blank: the measure's official title (first 45 characters) or "Prop(osition) N" for N 37 and up (1 to 5 need a BAL_NUM since those numbers were reused); tested. On the real zip, 8 more committees matched (unmatched 2026 covers with a name: 116 to 108 committees). Most of the rest name initiative numbers (25-0022, 25-0024) or other measures (Prop 50 is not on this ballot). Left: map initiative numbers to measures from the SoS list (needs the official numbers), re-run `%TEMP%\emt-side-totals.py` (it streams and takes about a minute, the earlier 10-minute run held the whole table in memory), compare with the state's totals, then the page (step 2).
-
-Progress Nov 16 (initiative numbers): checked sos.ca.gov/elections/ballot-measures/qualified-ballot-measures: it lists only Prop numbers, titles and types, no initiative numbers (25-0022, 25-0024), so the initiative-number to measure mapping cannot come from that page. Next: try the SoS "initiatives cleared for circulation" / eligible-measures pages or the AG's title-and-summary list (each pairs an initiative number with its title), then add a number-to-measure table in ballot.py.
 
 ## Unseen Date Format Alarm (Small)
 

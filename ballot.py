@@ -224,16 +224,19 @@ RECEIPT_COLUMNS = {"FILING_ID", "AMEND_ID", "REC_TYPE", "FORM_TYPE", "CTRIB_NAML
 def measure_totals(zip_path):
     """Yes/no totals for every 2026 measure straight from the bulk zip: {measure: side_totals(...)}.
     Stops (ValueError) on an unreadable cover date. Reads the covers once, then streams the 3.9 GB
-    receipts table keeping only rows of matched filings, so memory stays small."""
+    receipts table keeping only rows of matched filings, so memory stays small. Each filing counts
+    only for the measure its own cover names: a committee filing about several measures does not
+    have one filing's money added to all of them."""
     covers = list(read_zip_table(zip_path, "CalAccess/DATA/CVR_CAMPAIGN_DISCLOSURE_CD.TSV", COVER_COLUMNS))
     check_dates(covers)
-    per, filings = defaultdict(dict), set()
+    per, by_measure = defaultdict(dict), defaultdict(set)
     for c in covers:
         m = match_cover(c)
         if m:
             per[m[0]][c["FILER_ID"]] = m[1]
-            filings.add(c["FILING_ID"])
-    matched = [c for c in covers if c["FILING_ID"] in filings]
+            by_measure[m[0]].add(c["FILING_ID"])
+    filings = set().union(*by_measure.values())
     receipts = [r for r in read_zip_table(zip_path, "CalAccess/DATA/RCPT_CD.TSV", RECEIPT_COLUMNS)
                 if r["FILING_ID"] in filings]
-    return {m: side_totals(matched, receipts, per[m]) for m in sorted(per)}
+    return {m: side_totals([c for c in covers if c["FILING_ID"] in by_measure[m]], receipts, per[m])
+            for m in sorted(per)}

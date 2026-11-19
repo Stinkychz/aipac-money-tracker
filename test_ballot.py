@@ -162,6 +162,11 @@ class MatchCoverTests(unittest.TestCase):
         self.assertEqual(out[40]["yes"]["outOfState"], 500.0)
         with self.assertRaises(ValueError):
             ballot.measure_totals(make("1\t0\tF1\tNov 3 2026\t40\t\tS\t\n"))
+        # One committee filing about two measures: each filing's money goes only to the
+        # measure its own cover names, never to every measure the committee ever named.
+        out = ballot.measure_totals(make("1\t0\tF1\t11/3/2026 \t40\t\tS\t\n2\t0\tF1\t11/3/2026 \t41\t\tO\t\n"))
+        self.assertEqual(out[40]["yes"]["total"], 750.0)
+        self.assertEqual(out[41]["no"]["total"], 0.0)
 
     def test_official_list_has_fourteen(self):
         self.assertEqual(len(MEASURES_2026), 14)
