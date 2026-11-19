@@ -6,6 +6,8 @@
 Same numbers as the page's live mode: AIPAC PAC (C00797670) contributions to candidates
 (pas2), and United Democracy Project (C00799031) independent expenditures for / against them.
 Also each tracked race's top two fundraisers by total money raised (weball, the all-candidates summary).
+And each tracked candidate's money from individuals split at $200 into small and big gifts (weball plus the
+FEC totals API's itemized figure).
 """
 import csv, datetime, io, json, os, re, sys, time, urllib.request, zipfile
 from collections import defaultdict
@@ -77,6 +79,44 @@ def top_raisers(lines, races, n=2):
     return {k: sorted(v, key=lambda c: (-c["raised"], c["id"]))[:n] for k, v in sorted(by_race.items())}
 
 
+def small_big(lines, itemized):
+    """Each candidate's money from individuals split at the FEC's own $200 line: `big` is gifts over $200
+    (itemized, listed by name), `small` the rest (total from individuals, weball column 17, minus itemized).
+    `itemized` maps candidate id to (itemized total, coverage end YYYY-MM-DD) from the FEC totals API.
+    A candidate is left out when the two sources cover different periods or the numbers don't add up."""
+    out = {}
+    for line in lines:
+        f = line.split("|")
+        if len(f) < 28 or f[0] not in itemized:
+            continue
+        big, end = itemized[f[0]]
+        try:
+            m, d, y = f[27].split("/")
+            same = f"{y}-{int(m):02}-{int(d):02}" == end
+        except ValueError:
+            same = False
+        total = float(f[17] or 0)
+        if same and total > 0 and 0 <= big <= total:
+            out[f[0]] = {"small": round(total - big, 2), "big": round(big, 2), "through": f[27]}
+    return dict(sorted(out.items()))
+
+
+def fetch_itemized(ids, chunk=50):
+    """Itemized individual gifts (over $200) and coverage end for each candidate id, this cycle's two years,
+    from the FEC totals API (key from env FEC_API_KEY, else DEMO_KEY)."""
+    key = os.environ.get("FEC_API_KEY") or "DEMO_KEY"
+    ids, got = sorted(ids), {}
+    for i in range(0, len(ids), chunk):
+        url = (f"https://api.open.fec.gov/v1/candidates/totals/?api_key={key}&per_page=100&cycle={CYCLE}"
+               f"&election_full=false&" + "&".join(f"candidate_id={c}" for c in ids[i:i + chunk]))
+        with urllib.request.urlopen(url, timeout=60) as r:
+            for row in json.load(r)["results"]:
+                if row.get("individual_itemized_contributions") is not None and row.get("coverage_end_date"):
+                    got[row["candidate_id"]] = (float(row["individual_itemized_contributions"]),
+                                                row["coverage_end_date"][:10])
+    return got
+
+
 def fetch_filing_dates(today):
     """Upcoming monthly-filer due dates from the FEC calendar (public endpoint; key from env FEC_API_KEY, else the shared DEMO_KEY)."""
     key = os.environ.get("FEC_API_KEY") or "DEMO_KEY"
@@ -143,18 +183,26 @@ def main():
     page = PAGE.read_text(encoding="utf-8")
     old = re.search(r"/\*SNAPSHOT\*/(.*?)/\*END\*/", page, flags=re.S)
     prev = json.loads(old.group(1)) if old and old.group(1) != "null" else None
+    weball = None
     try:  # each tracked race's top two fundraisers; if the file is down, keep the ones already in the page
-        races = top_raisers(unzip_lines(f"{CYCLE}/weball{yy}.zip"),
-                            {race_key(c["office"], c["state"], c["district"]) for c in out})
+        weball = unzip_lines(f"{CYCLE}/weball{yy}.zip")
+        races = top_raisers(weball, {race_key(c["office"], c["state"], c["district"]) for c in out})
     except Exception as e:
         print("FEC candidate totals not read:", e)
         races = (prev or {}).get("races", {})
+    try:  # small vs big gifts for each tracked candidate; if either source is down, keep the page's
+        donor_size = small_big(weball, fetch_itemized({c["id"] for c in out})) if weball else None
+    except Exception as e:
+        print("FEC itemized totals not read:", e)
+        donor_size = None
+    if donor_size is None:
+        donor_size = (prev or {}).get("donorSize", {})
     try:  # the next-filing note; if the FEC calendar is down, keep the dates already in the page
         due = fetch_filing_dates(datetime.date.today())
         page = re.sub(r"/\*DUE\*/.*?/\*END\*/", lambda m: "/*DUE*/" + json.dumps(due) + "/*END*/", page, flags=re.S)
     except Exception as e:
         print("FEC filing calendar not read:", e)
-    if prev and prev["candidates"] == out and prev.get("races") == races:
+    if prev and prev["candidates"] == out and prev.get("races") == races and prev.get("donorSize") == donor_size:
         if page != PAGE.read_text(encoding="utf-8"):
             PAGE.write_text(page, encoding="utf-8")
         print("No new filings.")
@@ -162,7 +210,7 @@ def main():
     at = int(time.time() * 1000)
     changed = count_changed(prev and prev["candidates"], out)
     snap = {"at": at, "source": "snapshot", "candidates": out, "races": races,
-            "log": next_log(prev and prev.get("log"), at, changed)}
+            "donorSize": donor_size, "log": next_log(prev and prev.get("log"), at, changed)}
     page, n = re.subn(r"/\*SNAPSHOT\*/.*?/\*END\*/", lambda m: "/*SNAPSHOT*/" + json.dumps(snap) + "/*END*/",
                       page, flags=re.S)
     if n != 1:

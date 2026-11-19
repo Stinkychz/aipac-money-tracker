@@ -69,6 +69,8 @@ glance, and the numbers come straight from the filings. Where the line between s
 sits (federal filings itemize gifts over $200) is a swipe card for Hayden at build time. Hayden
 picked this idea on Nov 8, 2026.
 
+Done Nov 19 (data step): the line is $200, the FEC's own (campaigns list gifts over $200 by name and report the rest as one total); not a card, since any other line needs the multi-gigabyte individual contributions file on every refresh. `build.py` now bakes `donorSize` into the snapshot: for each tracked candidate, `big` (itemized, from the FEC totals API, 50 candidate ids per call) and `small` (weball's total from individuals minus itemized), left out when the two sources cover different periods; if either source is down it keeps the page's. Tested (8 build tests pass; a real dry run split 337 of 353 tracked candidates, the rest have no itemized figure). Nothing on the page shows it yet. Left: the one bar per candidate (where it shows follows card F2's answer; screenshot and the `hayden` review first). The live mode in `index.html` builds its data without `donorSize`, so the bar must keep the snapshot's when live data replaces it.
+
 ## Follow One Candidate (Medium)
 
 Tap Follow on a candidate and get a short alert whenever a new large donation to them is filed. It
@@ -145,6 +147,8 @@ sensitive site, fixing errors fast is how you keep trust. The site is a single s
 where reports are stored (a GitHub issue form, a free form service or a small server) is a swipe
 card for Hayden at build time, and nothing goes live until he says yes. Hayden picked this idea on
 Nov 8, 2026.
+
+Waiting on Hayden (Nov 19): card R1 (where reports go) in `docs/decisions.md`. The repo is public, so GitHub issues would be readable by everyone. Once answered, the button goes in `index.html` (and, for the form service, Hayden's sign-up for it, a step only he can do).
 
 ## Next Filing Countdown (Small)
 
