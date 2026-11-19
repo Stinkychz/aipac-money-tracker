@@ -34,9 +34,11 @@ without Hayden's yes. Hayden picked this idea on Nov 8, 2026.
 
 ## Funding Month by Month (Small)
 
-A simple line chart on each candidate's page showing how much money came in every month of the
+A simple line chart under each candidate's row showing their money month by month through the
 race. A line tells the story of a race in one glance, next to the bar charts and the biggest-jump
 list. Hayden picked this idea on Nov 8, 2026.
+
+Waiting on Hayden (Nov 19): cards F1 (which money) and F2 (where it shows) in `docs/decisions.md`. Once answered, the build goes in `build.py` (a separate baked block kept out of `candidates`, also written on the "No new filings" path, like `DUE`) and `index.html`. Unverified: the date format of the pas2 transaction date and the expenditure CSV's `exp_date`; read real rows before parsing (curl gets an HTML page from fec.gov, so read them with Python's urllib as `build.py` does).
 
 ## Donors Who Back Both Sides (Medium)
 
