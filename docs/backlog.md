@@ -274,3 +274,5 @@ When a number looks too low, the table says which filings haven't arrived yet, s
 
 Found on 2026-11-19 while researching the dropped Two Sources Disagree Flag idea. `build.py` drops amended repeats (3 of 166 rows, 130,479 or 0.2%) but live mode in `index.html` only skips memo rows. Inferred: live mode counts those repeats twice. Unverified: the FEC API was rate-limited, so live and built-in figures were not compared. Next step: compare live and built-in totals for the same committee and, if they differ by the amended rows, make live mode drop them the same way. Category: Bug.
 
+Done Nov 20: confirmed and fixed. The live FEC feed for United Democracy Project had 329 counted rows with 152 transaction ids listed twice (two filing numbers each, e.g. 2005889 and 2014027), so live mode showed $107.87M of spending for and against candidates where the built-in figures show $54.32M. `index.html` now keeps only the latest filing per transaction id (`latestFilings`, as `build.py` does); on the same live rows that leaves $54.24M, in line with the built-in figure. Build tests pass.
+

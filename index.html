@@ -270,6 +270,17 @@ async function superPacRows() {
   }
 }
 
+// A later filing repeats a transaction (same transaction_id): keep only the latest, as build.py does.
+function latestFilings(rows) {
+  const seen = new Map();
+  for (const r of rows) {
+    const key = r.transaction_id || r.sub_id;  // a row with no transaction id stands alone
+    const old = seen.get(key);
+    if (!old || (old.file_number || 0) < (r.file_number || 0)) seen.set(key, r);
+  }
+  return [...seen.values()];
+}
+
 async function inBatches(ids, fn) {
   const out = [];
   for (let i = 0; i < ids.length; i += 100) out.push(...await fn(ids.slice(i, i + 100)));
@@ -281,7 +292,7 @@ async function load() {
   const cands = {};
   const cand = (id) => (cands[id] ||= { id, pac: 0, support: 0, oppose: 0, nPac: 0, nSupport: 0, nOppose: 0 });
 
-  for (const r of ie) {
+  for (const r of latestFilings(ie)) {
     if (!r.candidate_id || r.memo_code === "X") continue;  // memo lines repeat other rows
     const c = cand(r.candidate_id);
     Object.assign(c, { name: r.candidate_name, party: r.candidate_party, office: r.candidate_office,
