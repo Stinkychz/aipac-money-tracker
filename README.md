@@ -10,6 +10,7 @@ Project (FEC `C00799031`), to each 2026 federal candidate, from public FEC filin
   the API is rate-limited. Run `python build.py` and push to refresh it.
 - **Open pages update themselves:** every 10 minutes (and when you return to the tab) the page checks for a newer built-in snapshot and swaps in the new figures without a reload.
 - **Refresh log** at the page bottom lists the last ten data refreshes (time and how many candidates changed); `build.py` records each one.
+- **Weekly update preview (private):** `python weekly.py` compares the built-in data with the newest snapshot in git history at least a week older and writes `out/weekly-preview.html` (git-ignored, never published, never emailed): new filed records, biggest moves, new and dropped candidates, totals.
 - **Download CSV** saves the rows shown (after filters) with FEC source links and a data-as-of date.
 - **Each top figure** shows its data-as-of date and links to the FEC committee page behind it; table figures link to their FEC filings, with a count of the filed records behind each.
 - **Next filing note** under the top figures names the next monthly or year-end report due and the days left; `build.py` bakes the due dates in from the FEC's own calendar (`/reporting-dates/`). Both committees are monthly filers per their FEC records.
