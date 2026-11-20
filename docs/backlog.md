@@ -32,7 +32,7 @@ candidates, biggest moves), so Hayden can judge it before anyone is ever emailed
 arrive all the time and a weekly summary gives visitors a reason to come back; nothing is sent
 without Hayden's yes. Hayden picked this idea on Nov 8, 2026.
 
-Done Nov 20 (preview built): `python weekly.py` compares the built-in snapshot with the newest one in git history at least a week older and writes `out/weekly-preview.html` (git-ignored, nothing sent); 6 tests in `test_weekly.py` pass. The real run (Nov 9 to Nov 20) is a quiet period: no figure changed. Snapshots older than Nov 9 have no record counts, so that section is left out for them. `hayden` review fixes applied (change column, bars, "net refund" on negative figures). Waiting on Hayden: card W1 (keep this format) in `docs/decisions.md`. Left after his answer: how it reaches him weekly (the refresh workflow could build it, but the repo is public, so it must not be committed).
+Done Nov 20 (preview built): `python weekly.py` compares the built-in snapshot with the newest one in git history at least a week older and writes `out/weekly-preview.html` (git-ignored, nothing sent); 6 tests in `test_weekly.py` pass. The real run (Nov 9 to Nov 20) is a quiet period: no figure changed. Snapshots older than Nov 9 have no record counts, so that section is left out for them. `hayden` review fixes applied (change column, bars, "net refund" on negative figures). Hayden answered card W1 on Nov 20: keep this format, still nothing emailed. Left: how it reaches him weekly (the refresh workflow could build it, but the repo is public, so it must not be committed).
 
 ## Funding Month by Month (Small)
 
