@@ -8,6 +8,8 @@ Same numbers as the page's live mode: AIPAC PAC (C00797670) contributions to can
 Also each tracked race's top two fundraisers by total money raised (weball, the all-candidates summary).
 And each tracked candidate's money from individuals split at $200 into small and big gifts (weball plus the
 FEC totals API's itemized figure).
+And what the figures cover: AIPAC PAC's latest filed report and the latest date a super PAC expenditure was
+made public.
 """
 import csv, datetime, io, json, os, re, sys, time, urllib.request, zipfile
 from collections import defaultdict
@@ -117,6 +119,44 @@ def fetch_itemized(ids, chunk=50):
     return got
 
 
+def last_report(rows):
+    """The filed report with the latest coverage end, from the FEC committee reports API rows:
+    {"name": its report type in words, "through": coverage end YYYY-MM-DD}, or None if no row has a date."""
+    rows = [r for r in rows if r.get("coverage_end_date")]
+    if not rows:
+        return None
+    r = max(rows, key=lambda r: r["coverage_end_date"][:10])
+    return {"name": r.get("report_type_full") or r.get("report_type") or "", "through": r["coverage_end_date"][:10]}
+
+
+def ie_date(s):
+    """An independent-expenditure CSV date ('29-OCT-26') as YYYY-MM-DD, or None if blank or unreadable."""
+    try:
+        return datetime.datetime.strptime((s or "").strip(), "%d-%b-%y").date().isoformat()
+    except ValueError:
+        return None
+
+
+def latest_spending(rows):
+    """The latest date the kept super PAC rows were made public (dissem_dt, else receipt_dat), YYYY-MM-DD.
+    These rows include 24- and 48-hour notices, so they can run past the committee's last full report."""
+    dates = [ie_date(r.get("dissem_dt")) or ie_date(r.get("receipt_dat")) for r in rows]
+    return max((d for d in dates if d), default=None)
+
+
+def fetch_last_report(committee):
+    """The committee's latest filed report this cycle (FEC committee reports API; key from env FEC_API_KEY, else DEMO_KEY)."""
+    key = os.environ.get("FEC_API_KEY") or "DEMO_KEY"
+    url = (f"https://api.open.fec.gov/v1/committee/{committee}/reports/?api_key={key}&per_page=100"
+           f"&cycle={CYCLE}&is_amended=false")
+    with urllib.request.urlopen(url, timeout=60) as r:
+        rows = json.load(r)["results"]
+    got = last_report(rows)
+    if got is None:  # a reply with no dated rows means the API changed shape, not that it is down
+        raise ValueError(f"reports API gave {len(rows)} rows for {committee} and none had coverage_end_date")
+    return got
+
+
 def fetch_filing_dates(today):
     """Upcoming monthly-filer due dates from the FEC calendar (public endpoint; key from env FEC_API_KEY, else the shared DEMO_KEY)."""
     key = os.environ.get("FEC_API_KEY") or "DEMO_KEY"
@@ -202,6 +242,15 @@ def main():
         page = re.sub(r"/\*DUE\*/.*?/\*END\*/", lambda m: "/*DUE*/" + json.dumps(due) + "/*END*/", page, flags=re.S)
     except Exception as e:
         print("FEC filing calendar not read:", e)
+    # what the figures cover; each half keeps the page's value if its source fails
+    old_cov = re.search(r"/\*COVERED\*/(.*?)/\*END\*/", page, flags=re.S)
+    covered = json.loads(old_cov.group(1)) if old_cov else {}
+    try:
+        covered["pac"] = fetch_last_report(AIPAC_PAC)
+    except Exception as e:
+        print("AIPAC PAC report coverage not read:", e)
+    covered["udp"] = latest_spending(seen.values()) or covered.get("udp")
+    page = re.sub(r"/\*COVERED\*/.*?/\*END\*/", lambda m: "/*COVERED*/" + json.dumps(covered) + "/*END*/", page, flags=re.S)
     if prev and prev["candidates"] == out and prev.get("races") == races and prev.get("donorSize") == donor_size:
         if page != PAGE.read_text(encoding="utf-8"):
             PAGE.write_text(page, encoding="utf-8")

@@ -1,5 +1,23 @@
 import unittest
-from build import count_changed, next_log, filing_dates, race_key, top_raisers, small_big
+from build import count_changed, next_log, filing_dates, race_key, top_raisers, small_big, last_report, latest_spending
+
+
+class Covered(unittest.TestCase):
+    def test_last_report_takes_latest_coverage_end(self):
+        rows = [{"report_type": "M10", "report_type_full": "OCTOBER MONTHLY", "coverage_end_date": "2026-09-30T00:00:00"},
+                {"report_type": "12G", "report_type_full": "PRE-GENERAL", "coverage_end_date": "2026-10-14T00:00:00"},
+                {"report_type": "M9", "coverage_end_date": None}]
+        self.assertEqual(last_report(rows), {"name": "PRE-GENERAL", "through": "2026-10-14"})
+        self.assertIsNone(last_report([{"report_type": "M9"}]))
+        self.assertIsNone(last_report([]))
+
+    def test_latest_spending_uses_made_public_date(self):
+        rows = [{"dissem_dt": "21-OCT-26", "receipt_dat": "22-OCT-26"},
+                {"dissem_dt": "", "receipt_dat": "30-OCT-26"},  # no dissemination date: fall back to receipt
+                {"dissem_dt": "29-OCT-26", "receipt_dat": "30-OCT-26"},
+                {"dissem_dt": "junk", "receipt_dat": ""}]
+        self.assertEqual(latest_spending(rows), "2026-10-30")
+        self.assertIsNone(latest_spending([{"dissem_dt": "", "receipt_dat": ""}]))
 
 
 class RefreshLog(unittest.TestCase):
