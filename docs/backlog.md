@@ -150,7 +150,7 @@ where reports are stored (a GitHub issue form, a free form service or a small se
 card for Hayden at build time, and nothing goes live until he says yes. Hayden picked this idea on
 Nov 8, 2026.
 
-Waiting on Hayden (Nov 19): card R1 (where reports go) in `docs/decisions.md`. The repo is public, so GitHub issues would be readable by everyone. Once answered, the button goes in `index.html` (and, for the form service, Hayden's sign-up for it, a step only he can do).
+Built Nov 20 on local branch `report-mistake` (worktree `../emt-report`, commit 4437a3a; not pushed, since pushing to this public repo needs Hayden's yes): Hayden answered R1 (a free form service). Service: Web3Forms (from its docs: free, emails each submission to the owner, browser POST to `api.web3forms.com/submit`, the access key is public by design and the owner's address never appears in the page). A "Report a mistake" button at the end of `index.html` opens a dialog (candidate, which figure, what looks wrong, optional email); the report carries the page, candidate and FEC id, figure shown, FEC filing link and data date; honeypot field; at most 3 reports an hour per browser. Tested with the service stubbed (send, failure, empty, hourly limit; payload checked) and the `hayden` review's fixes applied; build tests pass. Left: Hayden signs up at web3forms.com and sends the access key, it goes in `REPORT_KEY`, one real test report to his inbox, he sees it, then merge to main (which publishes).
 
 ## Next Filing Countdown (Small)
 
