@@ -91,6 +91,26 @@
   .gaprow small { color: var(--dim); font-size: 12px; white-space: nowrap; }
   .gapbar { display: flex; flex: 0 1 400px; min-width: 0; height: 8px; background: var(--dim); }
   .gapbar i { display: block; height: 100%; background: var(--line); }
+  .report { color: var(--dim); font-size: 13px; margin-top: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .report button, #report button { min-height: 44px; }
+  #report { background: var(--panel); color: var(--text); border: 1px solid var(--line); padding: 0;
+    width: min(480px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); }
+  #report::backdrop { background: rgb(0 0 0 / .6); }
+  #report form { display: flex; flex-direction: column; gap: 4px; padding: 16px; }
+  #report h2 { font-size: 18px; margin: 0 0 8px; }
+  #report label { margin-top: 8px; }
+  #report input, #report select, #report textarea { font-size: 16px; width: 100%; min-height: 44px; }
+  #report textarea { background: var(--bg); color: var(--text); border: 1px solid var(--line); padding: 8px 10px;
+    font: inherit; font-size: 16px; resize: vertical; }
+  #report :focus-visible, .report button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  #report .opt { color: var(--dim); font-size: 13px; }
+  #report p { margin: 4px 0 0; }
+  .rFound { color: var(--dim); font-size: 13px; overflow-wrap: anywhere; }
+  .rErr { color: var(--target); font-size: 13px; }
+  .rMsg:empty, .rErr:empty, .rFound:empty { display: none; }
+  .rBtns { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  #report button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+  #report button:disabled { opacity: .6; cursor: progress; }
 </style>
 </head>
 <body>
@@ -188,7 +208,41 @@
     <summary>Refresh log</summary>
     <ul id="reflogList"></ul>
   </details>
+  <p class="report"><button type="button" id="reportOpen">Report a mistake</button>
+    <span id="reportDone" role="status">Think a figure is wrong? Tell us, and we check it against the FEC filing.</span></p>
 </div>
+
+<dialog id="report" aria-labelledby="reportTitle">
+  <form id="reportForm" novalidate>
+    <h2 id="reportTitle">Report a mistake</h2>
+    <label for="rCand">Candidate <span class="opt">(leave blank for a figure at the top)</span></label>
+    <input id="rCand" name="candidate" list="rCands" autocomplete="off" spellcheck="false">
+    <datalist id="rCands"></datalist>
+    <label for="rFig">Which figure</label>
+    <select id="rFig" name="figure">
+      <option value="pac">AIPAC PAC</option>
+      <option value="support">Super PAC for</option>
+      <option value="total">Total backing</option>
+      <option value="oppose">Super PAC against</option>
+      <option value="stance">Stance icon</option>
+      <option value="other">Something else</option>
+    </select>
+    <p class="rFound" id="rFound" aria-live="polite"></p>
+    <label for="rWhat">What looks wrong?</label>
+    <textarea id="rWhat" name="what" rows="4" required aria-describedby="rWhatErr"></textarea>
+    <p class="rErr" id="rWhatErr"></p>
+    <label for="rEmail">Your email <span class="opt">(only if you want a reply)</span></label>
+    <input id="rEmail" name="email" type="email" autocomplete="email" inputmode="email">
+    <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" hidden>
+    <p class="opt">Your report goes privately by email to the person who runs this site, with the figure
+      and a link to its FEC filing. Nothing you write is published.</p>
+    <p class="rMsg" id="rMsg" role="status"></p>
+    <div class="rBtns">
+      <button type="submit" id="rSend" class="primary">Send report</button>
+      <button type="button" id="rCancel">Cancel</button>
+    </div>
+  </form>
+</dialog>
 
 <svg width="0" height="0" style="position:absolute">
   <symbol id="i-backed" viewBox="0 0 20 20"><path d="M10 1.5 17 4v5.5c0 4.3-3 7.6-7 9-4-1.4-7-4.7-7-9V4z" fill="none" stroke="#d9a441" stroke-width="1.6"/><path d="m6.5 10 2.4 2.4L13.8 7.5" fill="none" stroke="#d9a441" stroke-width="1.8"/></symbol>
@@ -644,6 +698,80 @@ if (data && data.source !== "snapshot" && Date.now() - data.at < refreshMs()) {
 } else {
   refresh();
 }
+
+// Report a mistake: the visitor's note goes by email to the site's owner through Web3Forms (a free form
+// service; the access key is public by design and only names the inbox, it never shows the address).
+// The page adds the figure and the FEC filing behind it, so the owner can check it in one tap.
+const REPORT_KEY = "";
+const REPORT_URL = "https://api.web3forms.com/submit";
+const REPORT_LOG = "emt.reports";
+const FIGS = { pac: "AIPAC PAC", support: "Super PAC for", total: "Total backing", oppose: "Super PAC against", stance: "Stance icon", other: "Something else" };
+const reportDlg = document.getElementById("report"), reportForm = document.getElementById("reportForm");
+const rCand = document.getElementById("rCand"), rFig = document.getElementById("rFig"), rWhat = document.getElementById("rWhat");
+const rFound = document.getElementById("rFound"), rErr = document.getElementById("rWhatErr"), rMsg = document.getElementById("rMsg"), rSend = document.getElementById("rSend");
+const candLabel = (c) => `${titleCase(c.name)} (${c.race})`;
+const reportCands = () => data ? withStances(data.candidates) : [];
+function reportFigure() {
+  const c = reportCands().find((x) => candLabel(x) === rCand.value.trim());
+  const k = rFig.value;
+  if (!c) return { c: null, value: "", filing: "" };
+  const value = k in { pac: 1, support: 1, total: 1, oppose: 1 } ? money(c[k]) : "";
+  const filing = k === "pac" ? PAC_SRC : k === "support" || k === "oppose" ? ieSrc(c, k) || ""
+    : /^[HSP]\d/.test(c.id) ? `https://www.fec.gov/data/candidate/${c.id}/` : "";
+  return { c, value, filing };
+}
+function showFound() {
+  const f = reportFigure();
+  rFound.textContent = f.c ? `${FIGS[rFig.value]} for ${titleCase(f.c.name)}${f.value ? ": " + f.value : ""}. A link to the FEC filing behind it goes with your report.` : "";
+}
+document.getElementById("reportOpen").addEventListener("click", () => {
+  document.getElementById("rCands").innerHTML = reportCands().map((c) => `<option value="${esc(candLabel(c))}">`).join("");
+  rMsg.textContent = ""; rErr.textContent = "";
+  reportDlg.showModal();
+});
+document.getElementById("rCancel").addEventListener("click", () => reportDlg.close());
+rCand.addEventListener("input", showFound);
+rFig.addEventListener("change", showFound);
+rWhat.addEventListener("input", () => { if (rWhat.value.trim()) { rErr.textContent = ""; rWhat.removeAttribute("aria-invalid"); } });
+reportForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!rWhat.value.trim()) { rErr.textContent = "Say what looks wrong, so it can be checked."; rWhat.setAttribute("aria-invalid", "true"); rWhat.focus(); return; }
+  // At most 3 reports an hour from one browser, so a stuck or playful visitor cannot flood the inbox.
+  let sent = [];
+  try { sent = JSON.parse(store.get(REPORT_LOG) || "[]").filter((t) => Date.now() - t < 3600e3); } catch {}
+  if (sent.length >= 3) { rMsg.textContent = "You have sent 3 reports this hour. Thank you; please send more in an hour."; return; }
+  const f = reportFigure();
+  const fd = new FormData(reportForm);
+  const body = {
+    access_key: REPORT_KEY,
+    subject: `Mistake report: ${f.c ? titleCase(f.c.name) : "page figure"}, ${FIGS[rFig.value]}`,
+    from_name: "Election Money Tracker",
+    page: location.href,
+    candidate: f.c ? `${candLabel(f.c)} ${f.c.id}` : rCand.value.trim() || "(none given)",
+    figure: FIGS[rFig.value],
+    figure_shown: f.value || "(not a dollar figure)",
+    fec_filing: f.filing || "(no filing link for this one)",
+    data_as_of: data ? new Date(data.at).toISOString() : "",
+    what_looks_wrong: rWhat.value.trim(),
+    botcheck: fd.get("botcheck") ? "on" : "",
+  };
+  const email = String(fd.get("email") || "").trim();
+  if (email) body.email = email;
+  rSend.disabled = true; rSend.textContent = "Sending…"; rMsg.textContent = "";
+  try {
+    const r = await fetch(REPORT_URL, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.success) throw new Error(j.message || "status " + r.status);
+    store.set(REPORT_LOG, JSON.stringify([...sent, Date.now()]));
+    reportForm.reset(); showFound();
+    reportDlg.close();
+    document.getElementById("reportDone").textContent = "Thanks, your report was sent. It will be checked against the FEC filing.";
+  } catch {
+    rMsg.textContent = "Your report was not sent. Please try again in a minute; what you wrote is still here.";
+  } finally {
+    rSend.disabled = false; rSend.textContent = "Send report";
+  }
+});
 </script>
 </body>
 </html>
