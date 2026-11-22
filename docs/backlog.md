@@ -280,3 +280,17 @@ Found on 2026-11-19 while researching the dropped Two Sources Disagree Flag idea
 
 Done Nov 20: confirmed and fixed. The live FEC feed for United Democracy Project had 329 counted rows with 152 transaction ids listed twice (two filing numbers each, e.g. 2005889 and 2014027), so live mode showed $107.87M of spending for and against candidates where the built-in figures show $54.32M. `index.html` now keeps only the latest filing per transaction id (`latestFilings`, as `build.py` does); on the same live rows that leaves $54.24M, in line with the built-in figure. Build tests pass. Left: run the page's own `latestFilings` on the live rows (script `%TEMP%\emt-amend-verify.mjs <index.html>`); the shared DEMO_KEY stayed over its rate limit for more than an hour on Nov 20, so this was only checked on made-up rows.
 
+Done Nov 21 (live check): ran the page's own `latestFilings` on the live FEC rows for United Democracy Project (`%TEMP%\emt-amend-verify.mjs index.html`): 329 live rows ($107.87M) become 174 ($54.24M), against the built-in $54.32M from 163 rows. Inferred: the $0.08M and 11-row gap comes from the live feed and the bulk file being cut at different times, not double counting. Item finished.
+
+## Hourly Refresh Time Estimate (Small)
+
+The site tells you plainly when the next data refresh will land, based on how long the last few took, instead of showing a fixed schedule. Three refresh picks are still waiting on the hourly refresh go, and you like status text that is honest about timing. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-21, so it goes ahead of unpicked items. Category: Want. Fable research: pending (a research session checks it is a good idea and writes its finding here before anyone builds it). If it defines the look, rules, names or new content, make an options card first.
+
+## Two Sources Disagree Flag (Medium)
+
+When two public records give different totals for the same donor or race, the table shows a small flag and both numbers instead of picking one quietly. Table figures now show how many filed records add up to them, and a visible disagreement fits your wish for accurate, honest numbers. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-21, so it goes ahead of unpicked items. Category: Want. Fable research: pending (a research session checks it is a good idea and writes its finding here before anyone builds it). If it defines the look, rules, names or new content, make an options card first.
+
+## Ballot Money Follows Your Address (Medium)
+
+After you type your address, the page also shows how much money, and how much from out of state, is behind the ballot measures where you live. The address box just shipped for your representatives and the ballot money zip reader with its out-of-state total is already built and tested, so they only need joining. An idea for Election Money Tracker. Hayden picked it from the Ideas deck on 2026-11-21, so it goes ahead of unpicked items. Category: Want. Fable research: pending (a research session checks it is a good idea and writes its finding here before anyone builds it). If it defines the look, rules, names or new content, make an options card first.
+
